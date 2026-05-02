@@ -26,13 +26,16 @@
         <span class="logo-bracket">/&gt;</span>
       </div>
       <ul class="nav-links">
-        <li><a href="#hero">Início</a></li>
-        <li><a href="#sobre">Sobre</a></li>
-        <li><a href="#skills">Skills</a></li>
-        <li><a href="#projetos">Projetos Pessoais</a></li>
-        <li><a href="#educacao">Formação</a></li>
-        <li><a href="#contato">Contato</a></li>
+        <li><a href="#hero" data-i18n="nav.home">Início</a></li>
+        <li><a href="#sobre" data-i18n="nav.about">Sobre</a></li>
+        <li><a href="#skills" data-i18n="nav.skills">Skills</a></li>
+        <li><a href="#projetos" data-i18n="nav.projects">Projetos Pessoais</a></li>
+        <li><a href="#educacao" data-i18n="nav.education">Formação</a></li>
+        <li><a href="#contato" data-i18n="nav.contact">Contato</a></li>
       </ul>
+      <button class="lang-toggle" id="lang-toggle" aria-label="Toggle language" title="Switch language">
+        <span id="lang-flag">🇺🇸</span>
+      </button>
       <button class="hamburger" id="hamburger" aria-label="Menu">
         <span></span><span></span><span></span>
       </button>
@@ -47,12 +50,12 @@
         <span class="line2">de Sousa</span>
       </h1>
       <div class="hero-subtitle typewriter" id="typewriter"></div>
-      <p class="hero-desc">
+      <p class="hero-desc" data-i18n-html="hero.descHtml">
         Engenheiro de Software com <strong>+10 anos</strong> de experiência em desenvolvimento backend.<br/>
         Especializado em <span class="highlight">Go</span>, <span class="highlight">Java</span>, <span class="highlight">Microserviços</span> e <span class="highlight">APIs de alto desempenho</span>.
       </p>
       <div class="hero-cta">
-        <a href="#projetos" class="btn btn-primary">Ver Projetos</a>
+        <a href="#projetos" class="btn btn-primary" data-i18n="hero.btnProjects">Ver Projetos</a>
         <a href="http://www.linkedin.com/in/rodrigodesousa03" target="_blank" rel="noopener" class="btn btn-secondary">LinkedIn</a>
       </div>
     </div>
@@ -82,32 +85,32 @@
     <div class="container">
       <div class="section-header">
         <span class="section-tag">// 01</span>
-        <h2 class="section-title">Sobre Mim</h2>
+        <h2 class="section-title" data-i18n="sobre.title">Sobre Mim</h2>
         <div class="section-line"></div>
       </div>
       <div class="sobre-grid">
         <div class="sobre-text">
-          <p>
+          <p data-i18n-html="sobre.p1Html">
             Sou um <span class="highlight">Engenheiro de Software Sênior</span> apaixonado por construir sistemas robustos, escaláveis e de alta performance. Com mais de uma década de experiência, já atuei em startups, fintechs e grandes empresas do mercado brasileiro.
           </p>
-          <p>
+          <p data-i18n-html="sobre.p2Html">
             Atualmente trabalho como <strong>Engenheiro de Software Sênior no PicPay</strong>, um dos maiores super apps financeiros do Brasil. Anteriormente fui <strong>Líder Técnico na NAPP</strong> e <strong>Engenheiro de Software Sênior na Getnet Brasil</strong>.
           </p>
-          <p>
+          <p data-i18n-html="sobre.p3Html">
             Minha stack principal gira em torno de <span class="highlight">Go</span> e <span class="highlight">Java</span>, com forte domínio em arquitetura de microserviços, mensageria, bancos relacionais e não relacionais, além de práticas modernas de DevOps e Cloud.
           </p>
           <div class="sobre-stats">
             <div class="stat">
               <span class="stat-num">10+</span>
-              <span class="stat-label">Anos de Exp.</span>
+              <span class="stat-label" data-i18n="sobre.statYears">Anos de Exp.</span>
             </div>
             <div class="stat">
               <span class="stat-num">5+</span>
-              <span class="stat-label">Projetos Online</span>
+              <span class="stat-label" data-i18n="sobre.statProjects">Projetos Online</span>
             </div>
             <div class="stat">
               <span class="stat-num">5+</span>
-              <span class="stat-label">Empresas</span>
+              <span class="stat-label" data-i18n="sobre.statCompanies">Empresas</span>
             </div>
           </div>
         </div>
@@ -115,41 +118,41 @@
           <div class="timeline-item active">
             <div class="tl-dot"></div>
             <div class="tl-content">
-              <span class="tl-date">ago/2024 — atual</span>
+              <span class="tl-date" data-i18n="sobre.tl1Date">ago/2024 — atual</span>
               <h4>PicPay</h4>
-              <p>Analista de Desenvolvimento de Sistemas Sênior</p>
+              <p data-i18n="sobre.tl1Role">Analista de Desenvolvimento de Sistemas Sênior</p>
             </div>
           </div>
           <div class="timeline-item">
             <div class="tl-dot"></div>
             <div class="tl-content">
-              <span class="tl-date">nov/2022 — ago/2024</span>
+              <span class="tl-date" data-i18n="sobre.tl2Date">nov/2022 — ago/2024</span>
               <h4>NAPP</h4>
-              <p>Líder Técnico</p>
+              <p data-i18n="sobre.tl2Role">Líder Técnico</p>
             </div>
           </div>
           <div class="timeline-item">
             <div class="tl-dot"></div>
             <div class="tl-content">
-              <span class="tl-date">abr/2022 — nov/2022</span>
+              <span class="tl-date" data-i18n="sobre.tl3Date">abr/2022 — nov/2022</span>
               <h4>NAPP</h4>
-              <p>Engenheiro de Software Sênior</p>
+              <p data-i18n="sobre.tl3Role">Engenheiro de Software Sênior</p>
             </div>
           </div>
           <div class="timeline-item">
             <div class="tl-dot"></div>
             <div class="tl-content">
-              <span class="tl-date">jul/2021 — abr/2022</span>
+              <span class="tl-date" data-i18n="sobre.tl4Date">jul/2021 — abr/2022</span>
               <h4>Getnet Brasil</h4>
-              <p>Analista Desenvolvedor Sênior</p>
+              <p data-i18n="sobre.tl4Role">Analista Desenvolvedor Sênior</p>
             </div>
           </div>
           <div class="timeline-item">
             <div class="tl-dot"></div>
             <div class="tl-content">
-              <span class="tl-date">ago/2015 — jul/2021</span>
+              <span class="tl-date" data-i18n="sobre.tl5Date">ago/2015 — jul/2021</span>
               <h4>DOit SA</h4>
-              <p>Java Developer (6 anos)</p>
+              <p data-i18n="sobre.tl5Role">Java Developer (6 anos)</p>
             </div>
           </div>
         </div>
@@ -177,7 +180,7 @@
         </div>
         <div class="skill-card">
           <div class="skill-icon">🗄️</div>
-          <h3>Banco de Dados</h3>
+          <h3 data-i18n="skills.databases">Banco de Dados</h3>
           <ul>
             <li><span>PostgreSQL</span><div class="skill-bar"><div class="skill-fill" style="--w:88%"></div></div></li>
             <li><span>MySQL</span><div class="skill-bar"><div class="skill-fill" style="--w:85%"></div></div></li>
@@ -186,20 +189,20 @@
         </div>
         <div class="skill-card">
           <div class="skill-icon">🛠️</div>
-          <h3>Ferramentas</h3>
+          <h3 data-i18n="skills.tools">Ferramentas</h3>
           <ul>
             <li><span>Maven / Git</span><div class="skill-bar"><div class="skill-fill" style="--w:90%"></div></div></li>
             <li><span>CI/CD</span><div class="skill-bar"><div class="skill-fill" style="--w:70%"></div></div></li>
-            <li><span>Observabilidade (Dynatrace / Grafana)</span><div class="skill-bar"><div class="skill-fill" style="--w:68%"></div></div></li>
+            <li><span data-i18n="skills.obs">Observabilidade (Dynatrace / Grafana)</span><div class="skill-bar"><div class="skill-fill" style="--w:68%"></div></div></li>
           </ul>
         </div>
         <div class="skill-card">
           <div class="skill-icon">🏗️</div>
-          <h3>Arquitetura</h3>
+          <h3 data-i18n="skills.architecture">Arquitetura</h3>
           <ul>
             <li><span>Microserviços</span><div class="skill-bar"><div class="skill-fill" style="--w:90%"></div></div></li>
-            <li><span>Testes Automatizados / TDD</span><div class="skill-bar"><div class="skill-fill" style="--w:88%"></div></div></li>
-            <li><span>Mensageria (SQS / SNS / Kafka)</span><div class="skill-bar"><div class="skill-fill" style="--w:62%"></div></div></li>
+            <li><span data-i18n="skills.automated">Testes Automatizados / TDD</span><div class="skill-bar"><div class="skill-fill" style="--w:88%"></div></div></li>
+            <li><span data-i18n="skills.messaging">Mensageria (SQS / SNS / Kafka)</span><div class="skill-bar"><div class="skill-fill" style="--w:62%"></div></div></li>
           </ul>
         </div>
       </div>
@@ -208,7 +211,7 @@
         <span class="tag">REST</span><span class="tag">Maven</span><span class="tag">Git</span>
         <span class="tag">GCP</span><span class="tag">TDD</span><span class="tag">Python</span>
         <span class="tag">PostgreSQL</span><span class="tag">MySQL</span><span class="tag">MongoDB</span>
-        <span class="tag">JSON</span><span class="tag">Microserviços</span><span class="tag">CI/CD</span>
+        <span class="tag">JSON</span><span class="tag" data-i18n="skills.microservicesTag">Microserviços</span><span class="tag">CI/CD</span>
         <span class="tag">SQS</span><span class="tag">SNS</span><span class="tag">Kafka</span>
         <span class="tag">Dynatrace</span><span class="tag">Grafana</span>
       </div>
@@ -220,7 +223,7 @@
     <div class="container">
       <div class="section-header">
         <span class="section-tag">// 03</span>
-        <h2 class="section-title">Projetos Pessoais</h2>
+        <h2 class="section-title" data-i18n="projetos.title">Projetos Pessoais</h2>
         <div class="section-line"></div>
       </div>
       <div class="projects-grid">
@@ -239,14 +242,14 @@
             </div>
           </div>
           <h3 class="project-title">Race Hub</h3>
-          <p class="project-desc">
+          <p class="project-desc" data-i18n="projetos.raceHubDesc">
             Sistema completo para gerenciamento e exibição de resultados de corridas virtuais. Plataforma robusta com dados de pilotos, campeonatos e estatísticas detalhadas.
           </p>
           <div class="project-tags">
             <span>Go</span><span>REST API</span><span>Backend</span>
           </div>
           <div class="project-footer">
-            <a href="https://f1bc.racehub.com" target="_blank" rel="noopener" class="btn btn-small">Visitar Site →</a>
+            <a href="https://f1bc.racehub.com" target="_blank" rel="noopener" class="btn btn-small" data-i18n="projetos.visitSite">Visitar Site →</a>
           </div>
         </div>
 
@@ -261,14 +264,14 @@
             </div>
           </div>
           <h3 class="project-title">Grip Racing</h3>
-          <p class="project-desc">
+          <p class="project-desc" data-i18n="projetos.gripDesc">
             Site oficial da equipe Grip Racing — lenda do automobilismo virtual brasileiro desde 2008. 311 pilotos, 169 títulos e 18 anos de história apresentados em uma plataforma moderna e dinâmica.
           </p>
           <div class="project-tags">
             <span>HTML/CSS/JS</span><span>Frontend</span><span>Racing</span>
           </div>
           <div class="project-footer">
-            <a href="https://gripracing.com.br/" target="_blank" rel="noopener" class="btn btn-small">Visitar Site →</a>
+            <a href="https://gripracing.com.br/" target="_blank" rel="noopener" class="btn btn-small" data-i18n="projetos.visitSite">Visitar Site →</a>
           </div>
         </div>
 
@@ -283,14 +286,14 @@
             </div>
           </div>
           <h3 class="project-title">Race Results</h3>
-          <p class="project-desc">
+          <p class="project-desc" data-i18n="projetos.raceResultsDesc">
             Ferramenta que transforma logs de simuladores de corrida em resultados formatados. Suporta iRacing, Assetto Corsa, Automobilista, rFactor e outros. 37 releases publicadas.
           </p>
           <div class="project-tags">
-            <span>Java</span><span>Desktop</span><span>Simuladores</span>
+            <span>Java</span><span>Desktop</span><span data-i18n="projetos.simuladores">Simuladores</span>
           </div>
           <div class="project-footer">
-            <a href="https://github.com/rodrigodesousa03/race-results" target="_blank" rel="noopener" class="btn btn-small">Ver no GitHub →</a>
+            <a href="https://github.com/rodrigodesousa03/race-results" target="_blank" rel="noopener" class="btn btn-small" data-i18n="projetos.viewGithub">Ver no GitHub →</a>
           </div>
         </div>
 
@@ -303,7 +306,7 @@
     <div class="container">
       <div class="section-header">
         <span class="section-tag">// 04</span>
-        <h2 class="section-title">Formação</h2>
+        <h2 class="section-title" data-i18n="educacao.title">Formação</h2>
         <div class="section-line"></div>
       </div>
       <div class="edu-grid">
@@ -311,18 +314,18 @@
           <div class="edu-icon">🎓</div>
           <div class="edu-body">
             <span class="edu-period">2009 — 2012</span>
-            <h3>Bacharel em Sistemas de Informação</h3>
+            <h3 data-i18n="educacao.degree1">Bacharel em Sistemas de Informação</h3>
             <a href="https://www.unifio.edu.br/home/" target="_blank" rel="noopener" class="edu-institution">UniFio — Faculdades Integradas de Ourinhos</a>
-            <p>Formação completa em tecnologia da informação, algoritmos, engenharia de software e banco de dados.</p>
+            <p data-i18n="educacao.edu1Desc">Formação completa em tecnologia da informação, algoritmos, engenharia de software e banco de dados.</p>
           </div>
         </div>
         <div class="edu-card">
           <div class="edu-icon">📜</div>
           <div class="edu-body">
             <span class="edu-period">2014 — 2015</span>
-            <h3>Pós-Graduação: Desenvolvimento e Gestão de Projetos em Fábrica de Software</h3>
+            <h3 data-i18n="educacao.degree2">Pós-Graduação: Desenvolvimento e Gestão de Projetos em Fábrica de Software</h3>
             <a href="https://fatecourinhos.cps.sp.gov.br/" target="_blank" rel="noopener" class="edu-institution">Fatec Ourinhos</a>
-            <p>Especialização em gestão de projetos de software, metodologias ágeis e liderança de equipes técnicas.</p>
+            <p data-i18n="educacao.edu2Desc">Especialização em gestão de projetos de software, metodologias ágeis e liderança de equipes técnicas.</p>
           </div>
         </div>
       </div>
@@ -334,26 +337,26 @@
     <div class="container">
       <div class="section-header">
         <span class="section-tag">// 05</span>
-        <h2 class="section-title">Contato</h2>
+        <h2 class="section-title" data-i18n="contato.title">Contato</h2>
         <div class="section-line"></div>
       </div>
       <div class="contact-wrapper">
         <div class="contact-text">
-          <h3>Vamos construir algo <span class="highlight">incrível</span> juntos?</h3>
-          <p>Estou sempre aberto a novos projetos, desafios técnicos e oportunidades de colaboração. Fique à vontade para entrar em contato!</p>
+          <h3 data-i18n-html="contato.h3Html">Vamos construir algo <span class="highlight">incrível</span> juntos?</h3>
+          <p data-i18n="contato.p">Estou sempre aberto a novos projetos, desafios técnicos e oportunidades de colaboração. Fique à vontade para entrar em contato!</p>
         </div>
         <div class="contact-links">
           <a href="mailto:rdsousa91@gmail.com" class="contact-card">
             <div class="contact-card-icon">✉️</div>
             <div class="contact-card-body">
-              <span class="contact-label">E-mail</span>
+              <span class="contact-label" data-i18n="contato.emailLabel">E-mail</span>
               <span class="contact-value">rdsousa91@gmail.com</span>
             </div>
           </a>
           <a href="http://www.linkedin.com/in/rodrigodesousa03" target="_blank" rel="noopener" class="contact-card">
             <div class="contact-card-icon">💼</div>
             <div class="contact-card-body">
-              <span class="contact-label">LinkedIn</span>
+              <span class="contact-label" data-i18n="contato.linkedinLabel">LinkedIn</span>
               <span class="contact-value">rodrigodesousa03</span>
             </div>
           </a>
@@ -362,7 +365,7 @@
               <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
             </div>
             <div class="contact-card-body">
-              <span class="contact-label">GitHub</span>
+              <span class="contact-label" data-i18n="contato.githubLabel">GitHub</span>
               <span class="contact-value">rodrigodesousa03</span>
             </div>
           </a>

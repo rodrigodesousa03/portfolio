@@ -144,6 +144,24 @@ body {
 .nav-links a:hover { color: var(--cyan); text-shadow: 0 0 12px var(--cyan); }
 .nav-links a:hover::after { width: 100%; }
 
+.lang-toggle {
+  background: none;
+  border: 1px solid rgba(0, 245, 255, 0.25);
+  border-radius: 6px;
+  cursor: pointer;
+  padding: 4px 8px;
+  font-size: 1.3rem;
+  line-height: 1;
+  transition: border-color .2s, transform .15s;
+  display: flex;
+  align-items: center;
+}
+
+.lang-toggle:hover {
+  border-color: var(--cyan);
+  transform: scale(1.1);
+}
+
 .hamburger {
   display: none;
   flex-direction: column;
@@ -169,8 +187,8 @@ body {
   min-height: 100vh;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 2rem;
+  justify-content: center;
+  gap: 4rem;
   padding: 6rem 5% 4rem;
   position: relative;
   z-index: 2;

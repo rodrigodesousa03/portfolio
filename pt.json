@@ -1,0 +1,74 @@
+{
+  "nav": {
+    "home": "Início",
+    "about": "Sobre",
+    "skills": "Skills",
+    "projects": "Projetos Pessoais",
+    "education": "Formação",
+    "contact": "Contato"
+  },
+  "hero": {
+    "descHtml": "Engenheiro de Software com <strong>+10 anos</strong> de experiência em desenvolvimento backend.<br/>Especializado em <span class=\"highlight\">Go</span>, <span class=\"highlight\">Java</span>, <span class=\"highlight\">Microserviços</span> e <span class=\"highlight\">APIs de alto desempenho</span>.",
+    "btnProjects": "Ver Projetos",
+    "phrases": ["Senior Software Engineer", "Go & Java Developer", "Microservices Architect", "Backend Specialist", "Tech Lead"]
+  },
+  "sobre": {
+    "title": "Sobre Mim",
+    "p1Html": "Sou um <span class=\"highlight\">Engenheiro de Software Sênior</span> apaixonado por construir sistemas robustos, escaláveis e de alta performance. Com mais de uma década de experiência, já atuei em startups, fintechs e grandes empresas do mercado brasileiro.",
+    "p2Html": "Atualmente trabalho como <strong>Engenheiro de Software Sênior no PicPay</strong>, um dos maiores super apps financeiros do Brasil. Anteriormente fui <strong>Líder Técnico na NAPP</strong> e <strong>Engenheiro de Software Sênior na Getnet Brasil</strong>.",
+    "p3Html": "Minha stack principal gira em torno de <span class=\"highlight\">Go</span> e <span class=\"highlight\">Java</span>, com forte domínio em arquitetura de microserviços, mensageria, bancos relacionais e não relacionais, além de práticas modernas de DevOps e Cloud.",
+    "statYears": "Anos de Exp.",
+    "statProjects": "Projetos Online",
+    "statCompanies": "Empresas",
+    "tl1Date": "ago/2024 — atual",
+    "tl1Role": "Analista de Desenvolvimento de Sistemas Sênior",
+    "tl2Date": "nov/2022 — ago/2024",
+    "tl2Role": "Líder Técnico",
+    "tl3Date": "abr/2022 — nov/2022",
+    "tl3Role": "Engenheiro de Software Sênior",
+    "tl4Date": "jul/2021 — abr/2022",
+    "tl4Role": "Analista Desenvolvedor Sênior",
+    "tl5Date": "ago/2015 — jul/2021",
+    "tl5Role": "Java Developer (6 anos)"
+  },
+  "skills": {
+    "title": "Stack & Skills",
+    "databases": "Banco de Dados",
+    "tools": "Ferramentas",
+    "architecture": "Arquitetura",
+    "obs": "Observabilidade (Dynatrace / Grafana)",
+    "automated": "Testes Automatizados / TDD",
+    "messaging": "Mensageria (SQS / SNS / Kafka)",
+    "microservicesTag": "Microserviços"
+  },
+  "projetos": {
+    "title": "Projetos Pessoais",
+    "raceHubDesc": "Sistema completo para gerenciamento e exibição de resultados de corridas virtuais. Plataforma robusta com dados de pilotos, campeonatos e estatísticas detalhadas.",
+    "gripDesc": "Site oficial da equipe Grip Racing — lenda do automobilismo virtual brasileiro desde 2008. 311 pilotos, 169 títulos e 18 anos de história apresentados em uma plataforma moderna e dinâmica.",
+    "raceResultsDesc": "Ferramenta que transforma logs de simuladores de corrida em resultados formatados. Suporta iRacing, Assetto Corsa, Automobilista, rFactor e outros. 37 releases publicadas.",
+    "simuladores": "Simuladores",
+    "visitSite": "Visitar Site →",
+    "viewGithub": "Ver no GitHub →"
+  },
+  "educacao": {
+    "title": "Formação",
+    "degree1": "Bacharel em Sistemas de Informação",
+    "edu1Desc": "Formação completa em tecnologia da informação, algoritmos, engenharia de software e banco de dados.",
+    "degree2": "Pós-Graduação: Desenvolvimento e Gestão de Projetos em Fábrica de Software",
+    "edu2Desc": "Especialização em gestão de projetos de software, metodologias ágeis e liderança de equipes técnicas.",
+    "certsTitle": "Certificações",
+    "cert1": "Python 2: Programando com a linguagem (16h)",
+    "cert2": "Testes: TDD com Java (12h)",
+    "cert3": "Java 8: Novos recursos da linguagem (12h)",
+    "cert4": "Go: Desenvolvendo uma API Rest",
+    "cert5": "Android: Avançando com listeners, menu e UI"
+  },
+  "contato": {
+    "title": "Contato",
+    "h3Html": "Vamos construir algo <span class=\"highlight\">incrível</span> juntos?",
+    "p": "Estou sempre aberto a novos projetos, desafios técnicos e oportunidades de colaboração. Fique à vontade para entrar em contato!",
+    "emailLabel": "E-mail",
+    "linkedinLabel": "LinkedIn",
+    "githubLabel": "GitHub"
+  }
+}
