@@ -31,6 +31,8 @@ function typewrite() {
   setTimeout(typewrite, deleting ? 40 : 80);
 }
 
+typewrite();
+
 document.getElementById('year').textContent = new Date().getFullYear();
 
 // =============================================
