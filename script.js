@@ -130,7 +130,7 @@ function applyTranslations() {
     if (val !== null) el.innerHTML = val;
   });
   document.documentElement.lang = currentLang === 'pt' ? 'pt-BR' : 'en';
-  document.getElementById('lang-flag').textContent = currentLang === 'pt' ? '🇺🇸' : '🇧🇷';
+  document.getElementById('lang-flag').innerHTML = currentLang === 'pt' ? '🇧🇷 <small>PT</small>' : '🇺🇸 <small>EN</small>';
 
   // Atualiza frases do typewriter
   phraseIdx = 0; charIdx = 0; deleting = false;
