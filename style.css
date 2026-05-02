@@ -249,6 +249,7 @@ body {
   -webkit-background-clip: text;
   background-clip: text;
   text-shadow: none;
+  padding-bottom: 0.1em;
 }
 
 .hero-title .line2 {
