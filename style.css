@@ -169,8 +169,9 @@ body {
   min-height: 100vh;
   display: flex;
   align-items: center;
-  justify-content: center;
-  padding: 6rem 2rem 4rem;
+  justify-content: space-between;
+  gap: 2rem;
+  padding: 6rem 5% 4rem;
   position: relative;
   z-index: 2;
   overflow: hidden;
@@ -368,10 +369,8 @@ body {
    HERO VISUAL — HEX
    ============================================ */
 .hero-visual {
-  position: absolute;
-  right: 5%;
-  top: 50%;
-  transform: translateY(-50%);
+  position: relative;
+  flex-shrink: 0;
   z-index: 3;
   display: flex;
   align-items: center;
