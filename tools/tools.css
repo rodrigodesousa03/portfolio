@@ -826,6 +826,14 @@ select.cfg-input { background: var(--dark); cursor: pointer; }
   padding: 0.5rem 0;
 }
 
+/* ---- SVM button ---- */
+.btn-svm {
+  border-color: rgba(0, 245, 255, 0.4);
+  color: var(--cyan);
+}
+.btn-svm:hover { border-color: var(--cyan); background: rgba(0,245,255,0.08); }
+.tool-launch-btn--svm { grid-column: 1 / -1; }
+
 /* ---- Label wrap + symmetric warning ---- */
 .field-label-wrap { display: flex; align-items: baseline; gap: 0.3rem; }
 .field-sym-warn {

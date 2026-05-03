@@ -130,7 +130,11 @@ const toolsI18n = {
       rightLabel: 'Dir.',
       hideFixed: 'Ocultar campos fixos',
       showFixed: 'Mostrar campos fixos',
-      symWarning: 'Idealmente Esq. = Dir.'
+      symWarning: 'Idealmente Esq. = Dir.',
+      importSvm: 'Importar .svm',
+      importSvmDesc: 'Carregar setup do rFactor 2',
+      exportSvm: 'Baixar .svm',
+      noSvmMap: 'Este template não possui mapeamento SVM.'
     }
   },
   en: {
@@ -261,7 +265,11 @@ const toolsI18n = {
       rightLabel: 'R',
       hideFixed: 'Hide fixed fields',
       showFixed: 'Show fixed fields',
-      symWarning: 'Ideally L = R'
+      symWarning: 'Ideally L = R',
+      importSvm: 'Import .svm',
+      importSvmDesc: 'Load an rF2 .svm setup file',
+      exportSvm: 'Download .svm',
+      noSvmMap: 'This template has no SVM mapping.'
     }
   }
 };

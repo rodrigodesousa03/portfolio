@@ -872,11 +872,21 @@ function renderLaunchPanel(toolId, schema) {
             <div class="launch-btn-desc">${getKey(t, 'ui.importJsonDesc')}</div>
           </div>
         </button>
+        ${(typeof svmMaps !== 'undefined' && svmMaps[selectedTemplateId]) ? `
+        <button class="tool-launch-btn tool-launch-btn--svm" onclick="triggerImportSvm('${toolId}')">
+          <span class="launch-btn-icon">⚙</span>
+          <div class="launch-btn-body">
+            <div class="launch-btn-title">${getKey(t, 'ui.importSvm')}</div>
+            <div class="launch-btn-desc">${getKey(t, 'ui.importSvmDesc')}</div>
+          </div>
+        </button>` : ''}
       </div>
       <input type="file" id="import-file-${toolId}" accept=".json" style="display:none"
         onchange="importSetup(event,'${toolId}')"/>
       <input type="file" id="import-template-${toolId}" accept=".json" style="display:none"
         onchange="importTemplateFile(event,'${toolId}')"/>
+      <input type="file" id="import-svm-${toolId}" accept=".svm" style="display:none"
+        onchange="importSvmFile(event,'${toolId}')"/>
     </div>`;
 }
 
@@ -1097,6 +1107,7 @@ function renderTool(schema) {
       <button class="btn-copy" id="btn-copy" onclick="copyJSON()">${getKey(t, 'ui.copy')}</button>
       <button class="btn btn-small" onclick="downloadJSON()">${getKey(t, 'ui.export')}</button>
       <button class="btn btn-small" onclick="exportTemplate()">${getKey(t, 'ui.exportTemplate')}</button>
+      ${(typeof svmMaps !== 'undefined' && svmMaps[selectedTemplateId]) ? `<button class="btn btn-small btn-svm" onclick="downloadSvm()">${getKey(t, 'ui.exportSvm')}</button>` : ''}
       <button class="btn btn-small btn-toggle-fixed" id="btn-toggle-fixed" onclick="toggleFixedFields()">${showFixedFields ? getKey(t, 'ui.hideFixed') : getKey(t, 'ui.showFixed')}</button>
     </div>
   `;
