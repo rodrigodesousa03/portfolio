@@ -10,7 +10,25 @@ const toolsI18n = {
       rf2Setup: {
         name: 'rFactor 2 Setup Builder',
         desc: 'Configurador de setup para rFactor 2'
+      },
+      fuelCalc: {
+        name: 'Calculadora de Combustível',
+        desc: 'Calcule o combustível necessário para a corrida'
       }
+    },
+    fuelCalc: {
+      title: 'Calculadora de Combustível',
+      subtitle: 'Calcule o combustível necessário para a corrida',
+      lapTime: 'Tempo de Volta',
+      fuelPerLap: 'Consumo por Volta',
+      raceDuration: 'Duração da Corrida',
+      extraLap: '+ 1 volta de margem',
+      calculate: 'Calcular',
+      laps: 'Voltas',
+      totalFuel: 'Combustível Total',
+      lapTimeLabel: 'Tempo de Volta',
+      extraLapNote: '+1 volta de margem incluída',
+      error: 'Preencha todos os campos corretamente. Formato do tempo: m:ss'
     },
     categories: {
       powertrain:         'Trem de Força',
@@ -123,7 +141,25 @@ const toolsI18n = {
       rf2Setup: {
         name: 'rFactor 2 Setup Builder',
         desc: 'Setup configurator for rFactor 2'
+      },
+      fuelCalc: {
+        name: 'Fuel Calculator',
+        desc: 'Calculate the fuel needed for the race'
       }
+    },
+    fuelCalc: {
+      title: 'Fuel Calculator',
+      subtitle: 'Calculate the fuel needed for the race',
+      lapTime: 'Lap Time',
+      fuelPerLap: 'Fuel per Lap',
+      raceDuration: 'Race Duration',
+      extraLap: '+ 1 extra lap',
+      calculate: 'Calculate',
+      laps: 'Laps',
+      totalFuel: 'Total Fuel',
+      lapTimeLabel: 'Lap Time',
+      extraLapNote: '+1 extra lap included',
+      error: 'Fill all fields correctly. Time format: m:ss'
     },
     categories: {
       powertrain:         'Powertrain',
@@ -254,6 +290,7 @@ function applyTranslations() {
   else if (currentSchema && currentToolId) {
     document.getElementById('tool-renderer').innerHTML = renderLaunchPanel(currentToolId, currentSchema);
   }
+  if (typeof reRenderFuelCalc !== 'undefined') reRenderFuelCalc();
 }
 
 document.getElementById('lang-toggle').addEventListener('click', () => {

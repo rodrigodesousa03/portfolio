@@ -809,6 +809,8 @@ function launchTool(toolId) {
   const templates = getTemplateList(toolId);
   if (!templates.length) return;
 
+  if (typeof isFuelCalcOpen !== 'undefined') isFuelCalcOpen = false;
+
   document.querySelectorAll('.tool-menu-card').forEach(c => c.classList.remove('active'));
   document.getElementById('card-' + toolId)?.classList.add('active');
 
