@@ -760,6 +760,7 @@ let isInBuilder = false;
 let selectedTemplateId = null;
 let linkState = {}; // uid -> boolean (true = linked L+R)
 let showFixedFields = true;
+let activeTagFilter = new Set();
 
 // Fields where L === R is ideal (symmetric setup warning)
 const symmetricFields = new Set([
@@ -892,6 +893,7 @@ function createNew(toolId) {
   currentSetupName = getKey(t, 'ui.newSetup');
   currentTrackName = '';
   linkState = {};
+  activeTagFilter = new Set();
   initValues(currentSchema);
   isInBuilder = true;
   renderTool(currentSchema);
@@ -949,6 +951,7 @@ function importSetup(event, toolId) {
       currentSchema = schema;
       activeCategory = null;
       linkState = {};
+      activeTagFilter = new Set();
       isInBuilder = true;
       renderTool(schema);
     } catch {
@@ -1045,6 +1048,11 @@ function renderTool(schema) {
   const catKeys = Object.keys(schema.categories);
   if (!activeCategory || !catKeys.includes(activeCategory)) activeCategory = catKeys[0];
 
+  const allSchemaTags = getSchemaKnowledgeTags(schema);
+  const tagBtnsHtml = allSchemaTags.map(tag =>
+    `<button class="tag-filter-btn${activeTagFilter.has(tag) ? ' active' : ''}" data-tag="${tag}" onclick="toggleTagFilter('${tag}')">${tag}</button>`
+  ).join('');
+
   let html = `
     <div class="tool-workspace-header">
       <div class="setup-header-inputs">
@@ -1057,6 +1065,11 @@ function renderTool(schema) {
           placeholder="${escapeHtml(getKey(t, 'ui.trackPlaceholder'))}"
           oninput="currentTrackName = this.value"/>
       </div>
+    </div>
+    <div class="tag-filter-bar" id="tag-filter-bar">
+      <span class="tag-filter-label">Filtrar:</span>
+      ${tagBtnsHtml}
+      <button class="tag-filter-clear" id="tag-filter-clear" onclick="clearTagFilter()" style="${activeTagFilter.size > 0 ? '' : 'display:none'}">✕ limpar</button>
     </div>
     <div class="category-tabs">
   `;
@@ -1269,19 +1282,80 @@ function updateDiffBadgeSide(uid, side, num, field) {
 // TOGGLE LINK (Esq. / Dir.)
 // =============================================
 // =============================================
-// FIXED FIELDS VISIBILITY
+// FIELD VISIBILITY (campos fixos + filtro por tag)
 // =============================================
-function applyFixedVisibility() {
-  document.querySelectorAll('.field-row.field-locked, .field-row.field-fixed').forEach(el => {
-    el.style.display = showFixedFields ? '' : 'none';
+function applyFieldVisibility() {
+  document.querySelectorAll('.field-row[id^="row-"]').forEach(row => {
+    const uid = row.id.replace('row-', '');
+    const isFixed = row.classList.contains('field-fixed') || row.classList.contains('field-locked');
+
+    if (!showFixedFields && isFixed) {
+      row.style.display = 'none';
+      return;
+    }
+
+    if (activeTagFilter.size > 0) {
+      const knowledge = fieldKnowledge[uid.split('__').join('.')];
+      const matches = (knowledge?.tags || []).some(tag => activeTagFilter.has(tag));
+      row.style.display = matches ? '' : 'none';
+      return;
+    }
+
+    row.style.display = '';
   });
+
+  // Colapsa subcategorias onde todos os campos estão ocultos
+  document.querySelectorAll('.subcat-block').forEach(block => {
+    const anyVisible = [...block.querySelectorAll('.field-row[id^="row-"]')].some(f => f.style.display !== 'none');
+    block.style.display = anyVisible ? '' : 'none';
+  });
+
   const btn = document.getElementById('btn-toggle-fixed');
   if (btn) btn.textContent = showFixedFields ? getKey(t, 'ui.hideFixed') : getKey(t, 'ui.showFixed');
 }
 
+function applyFixedVisibility() { applyFieldVisibility(); }
+
 function toggleFixedFields() {
   showFixedFields = !showFixedFields;
-  applyFixedVisibility();
+  applyFieldVisibility();
+}
+
+// =============================================
+// TAG FILTER
+// =============================================
+function getSchemaKnowledgeTags(schema) {
+  const tags = new Set();
+  for (const [catKey, cat] of Object.entries(schema.categories)) {
+    for (const [subKey, sub] of Object.entries(cat)) {
+      for (const fieldKey of Object.keys(sub)) {
+        const k = fieldKnowledge[`${catKey}.${subKey}.${fieldKey}`];
+        if (k) for (const tag of (k.tags || [])) tags.add(tag);
+      }
+    }
+  }
+  return [...tags].sort();
+}
+
+function toggleTagFilter(tag) {
+  if (activeTagFilter.has(tag)) activeTagFilter.delete(tag);
+  else activeTagFilter.add(tag);
+  updateTagFilterUI();
+  applyFieldVisibility();
+}
+
+function clearTagFilter() {
+  activeTagFilter.clear();
+  updateTagFilterUI();
+  applyFieldVisibility();
+}
+
+function updateTagFilterUI() {
+  document.querySelectorAll('.tag-filter-btn').forEach(btn => {
+    btn.classList.toggle('active', activeTagFilter.has(btn.dataset.tag));
+  });
+  const clearBtn = document.getElementById('tag-filter-clear');
+  if (clearBtn) clearBtn.style.display = activeTagFilter.size > 0 ? '' : 'none';
 }
 
 // =============================================
