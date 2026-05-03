@@ -4,8 +4,8 @@
 const toolsI18n = {
   pt: {
     nav: { portfolio: '← Portfolio', tools: 'Ferramentas' },
-    page: { title: 'Ferramentas', subtitle: 'Ferramentas para simuladores de corrida' },
-    catalog: { title: 'Ferramentas Disponíveis' },
+    page: { title: 'Ferramentas' },
+    catalog: { title: 'Simulador' },
     tools: {
       rf2Setup: {
         name: 'rFactor 2 Setup Builder',
@@ -35,7 +35,8 @@ const toolsI18n = {
       front_dampers:    'Amortecedores Dianteiros',
       rear_dampers:     'Amortecedores Traseiros',
       steering:         'Direção',
-      alignment:        'Alinhamento'
+      alignment:        'Alinhamento',
+      weight:           'Peso'
     },
     fields: {
       starting_fuel:    'Combustível Inicial',
@@ -72,7 +73,20 @@ const toolsI18n = {
       fast_bump:        'Compressão Rápida',
       fast_rebound:     'Extensão Rápida',
       steering_lock:    'Ângulo de Volante',
-      caster:           'Caster'
+      caster:           'Caster',
+      fender_flare:         'Expansão do Para-lama',
+      track_bar:            'Barra Panhard',
+      front_wheel_track:    'Bitola Dianteira',
+      rear_wheel_track:     'Bitola Traseira',
+      tender_spring_rate:   'Mola Auxiliar',
+      packers:              'Espaçadores',
+      spring_rubber:        'Borracha de Mola',
+      brake_disc:           'Disco de Freio',
+      handbrake_pressure:   'Freio de Mão',
+      vertical:             'C.G. Vertical',
+      lateral:              'C.G. Lateral',
+      weight_distribution:  'Dist. de Peso',
+      wedge:                'Cunha'
     },
     ui: {
       reset: 'Resetar Padrões', copy: 'Copiar JSON', copied: 'Copiado!', export: 'Baixar JSON', adjustable: 'ajustável',
@@ -85,13 +99,23 @@ const toolsI18n = {
       trackPlaceholder: 'Pista (opcional)',
       analyze: 'Analisar', analyzeClose: 'Fechar',
       analysisTitle: 'Análise do Setup', noChanges: 'Nenhuma alteração detectada.',
-      increased: 'Aumentado', decreased: 'Diminuído', defaultLabel: 'padrão'
+      increased: 'Aumentado', decreased: 'Diminuído', defaultLabel: 'padrão',
+      selectTemplate: 'Selecionar Carro',
+      importTemplate: 'Importar Template',
+      importTemplateDesc: 'Carregar schema de um carro',
+      exportTemplate: 'Exportar Template',
+      invalidTemplate: 'Arquivo inválido ou não reconhecido como template de carro.',
+      importedTemplate: 'Template Importado',
+      deleteTemplate: 'Excluir Template',
+      linked: 'Vinculado',
+      leftLabel: 'Esq.',
+      rightLabel: 'Dir.'
     }
   },
   en: {
     nav: { portfolio: '← Portfolio', tools: 'Tools' },
-    page: { title: 'Tools', subtitle: 'Tools for racing simulators' },
-    catalog: { title: 'Available Tools' },
+    page: { title: 'Tools' },
+    catalog: { title: 'Simulator' },
     tools: {
       rf2Setup: {
         name: 'rFactor 2 Setup Builder',
@@ -121,7 +145,8 @@ const toolsI18n = {
       front_dampers:    'Front Dampers',
       rear_dampers:     'Rear Dampers',
       steering:         'Steering',
-      alignment:        'Alignment'
+      alignment:        'Alignment',
+      weight:           'Weight'
     },
     fields: {
       starting_fuel:    'Starting Fuel',
@@ -158,7 +183,20 @@ const toolsI18n = {
       fast_bump:        'Fast Bump',
       fast_rebound:     'Fast Rebound',
       steering_lock:    'Steering Lock',
-      caster:           'Caster'
+      caster:           'Caster',
+      fender_flare:         'Fender Flare',
+      track_bar:            'Track Bar',
+      front_wheel_track:    'Front Wheel Track',
+      rear_wheel_track:     'Rear Wheel Track',
+      tender_spring_rate:   'Tender Spring Rate',
+      packers:              'Packers',
+      spring_rubber:        'Spring Rubber',
+      brake_disc:           'Brake Disc',
+      handbrake_pressure:   'Handbrake Pressure',
+      vertical:             'CG Vertical',
+      lateral:              'CG Lateral',
+      weight_distribution:  'Weight Distribution',
+      wedge:                'Wedge'
     },
     ui: {
       reset: 'Reset Defaults', copy: 'Copy JSON', copied: 'Copied!', export: 'Download JSON', adjustable: 'adjustable',
@@ -171,7 +209,17 @@ const toolsI18n = {
       trackPlaceholder: 'Track (optional)',
       analyze: 'Analyze', analyzeClose: 'Close',
       analysisTitle: 'Setup Analysis', noChanges: 'No changes detected.',
-      increased: 'Increased', decreased: 'Decreased', defaultLabel: 'default'
+      increased: 'Increased', decreased: 'Decreased', defaultLabel: 'default',
+      selectTemplate: 'Select Car',
+      importTemplate: 'Import Template',
+      importTemplateDesc: 'Load a car schema file',
+      exportTemplate: 'Export Template',
+      invalidTemplate: 'Invalid file or not recognized as a car template.',
+      importedTemplate: 'Imported Template',
+      deleteTemplate: 'Delete Template',
+      linked: 'Linked',
+      leftLabel: 'L',
+      rightLabel: 'R'
     }
   }
 };
@@ -248,92 +296,233 @@ document.querySelectorAll('.section-header, .tool-menu-card').forEach((el, i) =>
 });
 
 // =============================================
-// TOOL SCHEMAS (embedded for static hosting)
+// CAR TEMPLATES (embedded for static hosting)
 // =============================================
-const toolSchemas = {
-  'rf2-setup': {
-    game: 'rFactor 2',
-    categories: {
-      powertrain: {
-        engine: {
-          radiator_size:  { unit: null,   min: 1,    max: 5,    step: 1,    default: 3,    adjustable: true }
-        },
-        electronics: {
-          brake_map:      { unit: null,   min: 1,    max: 11,   step: 1,    default: 5,    adjustable: true },
-          engine_braking: { unit: null,   min: 1,    max: 5,    step: 1,    default: 3,    adjustable: true }
-        },
-        gearing: {
-          gear_1:       { unit: null, min: 2.50, max: 4.00, step: 0.01, default: 3.10, adjustable: true },
-          gear_2:       { unit: null, min: 1.80, max: 3.20, step: 0.01, default: 2.35, adjustable: true },
-          gear_3:       { unit: null, min: 1.30, max: 2.50, step: 0.01, default: 1.80, adjustable: true },
-          gear_4:       { unit: null, min: 1.00, max: 1.90, step: 0.01, default: 1.40, adjustable: true },
-          gear_5:       { unit: null, min: 0.75, max: 1.50, step: 0.01, default: 1.10, adjustable: true },
-          final_drive:  { unit: null, min: 2.80, max: 5.20, step: 0.01, default: 3.90, adjustable: true }
-        },
-        differential: {
-          power:   { unit: '%',  min: 0, max: 100, step: 1, default: 35, adjustable: true },
-          coast:   { unit: '%',  min: 0, max: 100, step: 1, default: 20, adjustable: true },
-          preload: { unit: null, min: 0, max: 10,  step: 1, default: 5,  adjustable: true }
+const carTemplates = {
+  'rf2-setup': [
+    {
+      id: 'generic',
+      name: 'Genérico',
+      builtin: true,
+      schema: {
+        game: 'rFactor 2',
+        categories: {
+          powertrain: {
+            engine: {
+              radiator_size:  { unit: null,   min: 1,    max: 5,    step: 1,    default: 3,    adjustable: true }
+            },
+            electronics: {
+              brake_map:      { unit: null,   min: 1,    max: 11,   step: 1,    default: 5,    adjustable: true },
+              engine_braking: { unit: null,   min: 1,    max: 5,    step: 1,    default: 3,    adjustable: true }
+            },
+            gearing: {
+              gear_1:       { unit: null, min: 2.50, max: 4.00, step: 0.01, default: 3.10, adjustable: true },
+              gear_2:       { unit: null, min: 1.80, max: 3.20, step: 0.01, default: 2.35, adjustable: true },
+              gear_3:       { unit: null, min: 1.30, max: 2.50, step: 0.01, default: 1.80, adjustable: true },
+              gear_4:       { unit: null, min: 1.00, max: 1.90, step: 0.01, default: 1.40, adjustable: true },
+              gear_5:       { unit: null, min: 0.75, max: 1.50, step: 0.01, default: 1.10, adjustable: true },
+              final_drive:  { unit: null, min: 2.80, max: 5.20, step: 0.01, default: 3.90, adjustable: true }
+            },
+            differential: {
+              power:   { unit: '%',  min: 0, max: 100, step: 1, default: 35, adjustable: true },
+              coast:   { unit: '%',  min: 0, max: 100, step: 1, default: 20, adjustable: true },
+              preload: { unit: null, min: 0, max: 10,  step: 1, default: 5,  adjustable: true }
+            }
+          },
+          wheels_and_brakes: {
+            front_wheels: {
+              tire_pressure: { unit: 'kPa', min: 130,  max: 200,  step: 1,   default: 168,  adjustable: true,  sides: 'both' },
+              camber:        { unit: '°',   min: -5.0, max: 0.0,  step: 0.1, default: -2.5, adjustable: true,  sides: 'both' },
+              brake_disc:    { unit: 'cm',  min: 2.80, max: 3.80, step: 0.05,default: 3.20, adjustable: false, sides: 'both' }
+            },
+            rear_wheels: {
+              tire_pressure: { unit: 'kPa', min: 130,  max: 200,  step: 1,   default: 162,  adjustable: true,  sides: 'both' },
+              camber:        { unit: '°',   min: -5.0, max: 0.0,  step: 0.1, default: -1.5, adjustable: true,  sides: 'both' },
+              brake_disc:    { unit: 'cm',  min: 2.80, max: 3.80, step: 0.05,default: 3.20, adjustable: false, sides: 'both' }
+            },
+            brakes: {
+              brake_bias:         { unit: '%',  min: 50.0, max: 70.0, step: 0.5, default: 57.0, adjustable: true  },
+              max_pedal_force:    { unit: '%',  min: 50,   max: 100,  step: 1,   default: 100,  adjustable: true  },
+              front_brake_duct:   { unit: null, min: 0,    max: 5,    step: 1,   default: 2,    adjustable: true  },
+              rear_brake_duct:    { unit: null, min: 0,    max: 5,    step: 1,   default: 1,    adjustable: true  },
+              handbrake_pressure: { unit: '%',  min: 0,    max: 100,  step: 1,   default: 100,  adjustable: false }
+            }
+          },
+          suspension_and_aero: {
+            front_suspension: {
+              spring_rate:        { unit: 'N/mm', min: 40, max: 160, step: 1,   default: 80,  adjustable: true,  sides: 'both' },
+              tender_spring_rate: { unit: 'N/mm', min: 0,  max: 200, step: 5,   default: 0,   adjustable: false, sides: 'both' },
+              packers:            { unit: 'mm',   min: 0,  max: 50,  step: 1,   default: 0,   adjustable: false, sides: 'both' },
+              ride_height:        { unit: 'mm',   min: 40, max: 100, step: 1,   default: 55,  adjustable: true,  sides: 'both' },
+              spring_rubber:      { unit: null,   min: 0,  max: 5,   step: 1,   default: 0,   adjustable: false, sides: 'both' }
+            },
+            rear_suspension: {
+              spring_rate:        { unit: 'N/mm', min: 40, max: 160, step: 1,   default: 85,  adjustable: true,  sides: 'both' },
+              tender_spring_rate: { unit: 'N/mm', min: 0,  max: 200, step: 5,   default: 0,   adjustable: false, sides: 'both' },
+              packers:            { unit: 'mm',   min: 0,  max: 50,  step: 1,   default: 0,   adjustable: false, sides: 'both' },
+              ride_height:        { unit: 'mm',   min: 40, max: 100, step: 1,   default: 58,  adjustable: true,  sides: 'both' },
+              spring_rubber:      { unit: null,   min: 0,  max: 5,   step: 1,   default: 0,   adjustable: false, sides: 'both' }
+            },
+            anti_roll_bars: {
+              front_arb: { unit: 'N/mm', min: 0, max: 50, step: 1, default: 22, adjustable: true },
+              rear_arb:  { unit: 'N/mm', min: 0, max: 50, step: 1, default: 17, adjustable: true }
+            },
+            toe: {
+              front_toe: { unit: '°', min: -0.50, max: 0.50, step: 0.01, default: 0.05, adjustable: true },
+              rear_toe:  { unit: '°', min:  0.00, max: 0.50, step: 0.01, default: 0.15, adjustable: true }
+            },
+            aerodynamics: {
+              front_downforce: { unit: null, min: 1, max: 10, step: 1, default: 5, adjustable: true },
+              rear_downforce:  { unit: null, min: 1, max: 10, step: 1, default: 6, adjustable: true }
+            }
+          },
+          dampers: {
+            front_dampers: {
+              slow_bump:    { unit: null, min: 0, max: 20, step: 1, default: 8,  adjustable: true, sides: 'both' },
+              slow_rebound: { unit: null, min: 0, max: 20, step: 1, default: 10, adjustable: true, sides: 'both' },
+              fast_bump:    { unit: null, min: 0, max: 20, step: 1, default: 6,  adjustable: true, sides: 'both' },
+              fast_rebound: { unit: null, min: 0, max: 20, step: 1, default: 8,  adjustable: true, sides: 'both' }
+            },
+            rear_dampers: {
+              slow_bump:    { unit: null, min: 0, max: 20, step: 1, default: 9,  adjustable: true, sides: 'both' },
+              slow_rebound: { unit: null, min: 0, max: 20, step: 1, default: 11, adjustable: true, sides: 'both' },
+              fast_bump:    { unit: null, min: 0, max: 20, step: 1, default: 7,  adjustable: true, sides: 'both' },
+              fast_rebound: { unit: null, min: 0, max: 20, step: 1, default: 9,  adjustable: true, sides: 'both' }
+            }
+          },
+          chassis: {
+            steering: {
+              steering_lock: { unit: '°', min: 10, max: 26, step: 1, default: 17, adjustable: true }
+            },
+            alignment: {
+              fender_flare:      { unit: 'cm', min: -5.0, max: 5.0,  step: 0.1, default: 0.0,  adjustable: false, sides: 'both' },
+              track_bar:         { unit: 'cm', min: -5.0, max: 5.0,  step: 0.1, default: 0.0,  adjustable: false, sides: 'both' },
+              caster:            { unit: '°',  min: 2.0,  max: 8.0,  step: 0.1, default: 4.5,  adjustable: true,  sides: 'both' },
+              front_wheel_track: { unit: 'cm', min: -3.0, max: 3.0,  step: 0.1, default: 0.0,  adjustable: false, sides: 'both' },
+              rear_wheel_track:  { unit: 'cm', min: -3.0, max: 3.0,  step: 0.1, default: 0.0,  adjustable: false, sides: 'both' }
+            },
+            weight: {
+              vertical:            { unit: 'cm',    min: 0,    max: 60,   step: 0.5,  default: 22.0, adjustable: false },
+              lateral:             { unit: null,    min: 40.0, max: 60.0, step: 0.1,  default: 50.0, adjustable: false },
+              weight_distribution: { unit: null,    min: 40.0, max: 60.0, step: 0.1,  default: 52.0, adjustable: false },
+              wedge:               { unit: 'turns', min: -2.0, max: 2.0,  step: 0.01, default: 0.0,  adjustable: false }
+            }
+          }
         }
-      },
-      wheels_and_brakes: {
-        front_wheels: {
-          tire_pressure: { unit: 'kPa', min: 130,  max: 200,  step: 1,   default: 168,  adjustable: true },
-          camber:        { unit: '°',   min: -5.0, max: 0.0,  step: 0.1, default: -2.5, adjustable: true }
-        },
-        rear_wheels: {
-          tire_pressure: { unit: 'kPa', min: 130,  max: 200,  step: 1,   default: 162,  adjustable: true },
-          camber:        { unit: '°',   min: -5.0, max: 0.0,  step: 0.1, default: -1.5, adjustable: true }
-        },
-        brakes: {
-          brake_bias:       { unit: '%',  min: 50.0, max: 70.0, step: 0.5, default: 57.0, adjustable: true },
-          max_pedal_force:  { unit: '%',  min: 50,   max: 100,  step: 1,   default: 100,  adjustable: true },
-          front_brake_duct: { unit: null, min: 0,    max: 5,    step: 1,   default: 2,    adjustable: true },
-          rear_brake_duct:  { unit: null, min: 0,    max: 5,    step: 1,   default: 1,    adjustable: true }
+      }
+    },
+    {
+      id: 'stock-car-2007-cc',
+      name: 'Stock Car 2007 — CC',
+      builtin: true,
+      schema: {
+        game: 'rFactor 2',
+        categories: {
+          powertrain: {
+            engine: {
+              radiator_size:  { unit: null,   min: 1,    max: 5,    step: 1,    default: 1,    adjustable: true }
+            },
+            electronics: {
+              brake_map:      { unit: null,   min: 0,    max: 5,    step: 1,    default: 3,    adjustable: true },
+              engine_braking: { unit: null,   min: 1,    max: 5,    step: 1,    default: 3,    adjustable: true }
+            },
+            gearing: {
+              gear_1:       { unit: null, min: 2.50, max: 4.00, step: 0.01, default: 3.10, adjustable: false },
+              gear_2:       { unit: null, min: 1.80, max: 3.20, step: 0.01, default: 2.35, adjustable: false },
+              gear_3:       { unit: null, min: 1.30, max: 2.50, step: 0.01, default: 1.80, adjustable: false },
+              gear_4:       { unit: null, min: 1.00, max: 1.90, step: 0.01, default: 1.40, adjustable: false },
+              gear_5:       { unit: null, min: 0.75, max: 1.50, step: 0.01, default: 1.10, adjustable: false },
+              final_drive:  { unit: null, min: 2.80, max: 5.20, step: 0.01, default: 3.90, adjustable: false }
+            },
+            differential: {
+              power:   { unit: '%',  min: 0,  max: 75,  step: 5,  default: 40, adjustable: true },
+              coast:   { unit: '%',  min: 0,  max: 75,  step: 5,  default: 50, adjustable: true },
+              preload: { unit: null, min: 0,  max: 10,  step: 1,  default: 1,  adjustable: true }
+            }
+          },
+          wheels_and_brakes: {
+            front_wheels: {
+              tire_pressure: { unit: 'kPa', min: 160,  max: 190,  step: 1,   default: 170,  adjustable: true,  sides: 'both' },
+              camber:        { unit: '°',   min: -6.0, max: 2.0,  step: 0.1, default: -4.0, adjustable: true,  sides: 'both' },
+              brake_disc:    { unit: 'cm',  min: 2.80, max: 3.80, step: 0.05,default: 3.50, adjustable: false, sides: 'both' }
+            },
+            rear_wheels: {
+              tire_pressure: { unit: 'kPa', min: 160,  max: 190,  step: 1,   default: 170,  adjustable: true,  sides: 'both' },
+              camber:        { unit: '°',   min: -6.0, max: 2.0,  step: 0.1, default: -1.4, adjustable: true,  sides: 'both' },
+              brake_disc:    { unit: 'cm',  min: 2.80, max: 3.80, step: 0.05,default: 3.20, adjustable: false, sides: 'both' }
+            },
+            brakes: {
+              brake_bias:         { unit: '%',  min: 35.0, max: 65.0, step: 0.5, default: 56.0, adjustable: true  },
+              max_pedal_force:    { unit: '%',  min: 0,    max: 100,  step: 1,   default: 85,   adjustable: true  },
+              front_brake_duct:   { unit: null, min: 1,    max: 5,    step: 1,   default: 4,    adjustable: true  },
+              rear_brake_duct:    { unit: null, min: 1,    max: 5,    step: 1,   default: 1,    adjustable: false },
+              handbrake_pressure: { unit: '%',  min: 0,    max: 100,  step: 1,   default: 100,  adjustable: false }
+            }
+          },
+          suspension_and_aero: {
+            front_suspension: {
+              spring_rate:        { unit: 'N/mm', min: 60,  max: 70,  step: 2,   default: 60,  adjustable: true,  sides: 'both' },
+              tender_spring_rate: { unit: 'N/mm', min: 0,   max: 200, step: 5,   default: 0,   adjustable: false, sides: 'both' },
+              packers:            { unit: 'mm',   min: 0,   max: 50,  step: 1,   default: 0,   adjustable: false, sides: 'both' },
+              ride_height:        { unit: 'cm',   min: 4.5, max: 5.5, step: 0.1, default: 4.5, adjustable: true,  sides: 'both' },
+              spring_rubber:      { unit: null,   min: 0,   max: 5,   step: 1,   default: 0,   adjustable: false, sides: 'both' }
+            },
+            rear_suspension: {
+              spring_rate:        { unit: 'N/mm', min: 110, max: 120, step: 2,   default: 110, adjustable: true,  sides: 'both' },
+              tender_spring_rate: { unit: 'N/mm', min: 0,   max: 200, step: 5,   default: 0,   adjustable: false, sides: 'both' },
+              packers:            { unit: 'mm',   min: 0,   max: 50,  step: 1,   default: 0,   adjustable: false, sides: 'both' },
+              ride_height:        { unit: 'cm',   min: 5,   max: 6,   step: 0.1, default: 5,   adjustable: true,  sides: 'both' },
+              spring_rubber:      { unit: null,   min: 0,   max: 5,   step: 1,   default: 0,   adjustable: false, sides: 'both' }
+            },
+            anti_roll_bars: {
+              front_arb: { unit: 'N/mm', min: 0, max: 46, step: 1, default: 23, adjustable: true },
+              rear_arb:  { unit: 'N/mm', min: 0, max: 30, step: 1, default: 15, adjustable: true }
+            },
+            toe: {
+              front_toe: { unit: '°', min: -1.00, max: 1.00, step: 0.05, default: 0.00, adjustable: true },
+              rear_toe:  { unit: '°', min: -1.00, max: 1.00, step: 0.05, default: 0.10, adjustable: true }
+            },
+            aerodynamics: {
+              front_downforce: { unit: null, min: 1, max: 5, step: 1, default: 5, adjustable: true },
+              rear_downforce:  { unit: null, min: 1, max: 3, step: 1, default: 3, adjustable: true }
+            }
+          },
+          dampers: {
+            front_dampers: {
+              slow_bump:    { unit: null, min: 1, max: 16, step: 1, default: 8,  adjustable: true, sides: 'both' },
+              slow_rebound: { unit: null, min: 1, max: 16, step: 1, default: 10, adjustable: true, sides: 'both' },
+              fast_bump:    { unit: null, min: 1, max: 16, step: 1, default: 16, adjustable: true, sides: 'both' },
+              fast_rebound: { unit: null, min: 1, max: 16, step: 1, default: 8,  adjustable: true, sides: 'both' }
+            },
+            rear_dampers: {
+              slow_bump:    { unit: null, min: 1, max: 16, step: 1, default: 6,  adjustable: true, sides: 'both' },
+              slow_rebound: { unit: null, min: 1, max: 16, step: 1, default: 1,  adjustable: true, sides: 'both' },
+              fast_bump:    { unit: null, min: 1, max: 16, step: 1, default: 16, adjustable: true, sides: 'both' },
+              fast_rebound: { unit: null, min: 1, max: 16, step: 1, default: 3,  adjustable: true, sides: 'both' }
+            }
+          },
+          chassis: {
+            steering: {
+              steering_lock: { unit: '°', min: 0, max: 17.5, step: 0.2, default: 2.0, adjustable: true }
+            },
+            alignment: {
+              fender_flare:      { unit: 'cm', min: -5.0, max: 5.0,  step: 0.1, default: 0.0,  adjustable: false, sides: 'both' },
+              track_bar:         { unit: 'cm', min: -5.0, max: 5.0,  step: 0.1, default: 0.0,  adjustable: false, sides: 'both' },
+              caster:            { unit: '°',  min: 5.0,  max: 33.0, step: 0.5, default: 15.0, adjustable: true,  sides: 'both' },
+              front_wheel_track: { unit: 'cm', min: -3.0, max: 3.0,  step: 0.1, default: 0.0,  adjustable: false, sides: 'both' },
+              rear_wheel_track:  { unit: 'cm', min: -3.0, max: 3.0,  step: 0.1, default: 0.0,  adjustable: false, sides: 'both' }
+            },
+            weight: {
+              vertical:            { unit: 'cm',    min: 0,    max: 60,   step: 0.5,  default: 22.0, adjustable: false },
+              lateral:             { unit: null,    min: 40.0, max: 60.0, step: 0.1,  default: 50.0, adjustable: false },
+              weight_distribution: { unit: null,    min: 40.0, max: 60.0, step: 0.1,  default: 52.0, adjustable: false },
+              wedge:               { unit: 'turns', min: -2.0, max: 2.0,  step: 0.01, default: 0.0,  adjustable: false }
+            }
+          }
         }
-      },
-      suspension_and_aero: {
-        front_suspension: {
-          spring_rate: { unit: 'N/mm', min: 40, max: 160, step: 1, default: 80, adjustable: true },
-          ride_height:  { unit: 'mm',  min: 40, max: 100, step: 1, default: 55, adjustable: true }
-        },
-        rear_suspension: {
-          spring_rate: { unit: 'N/mm', min: 40, max: 160, step: 1, default: 85, adjustable: true },
-          ride_height:  { unit: 'mm',  min: 40, max: 100, step: 1, default: 58, adjustable: true }
-        },
-        anti_roll_bars: {
-          front_arb: { unit: 'N/mm', min: 0, max: 50, step: 1, default: 22, adjustable: true },
-          rear_arb:  { unit: 'N/mm', min: 0, max: 50, step: 1, default: 17, adjustable: true }
-        },
-        toe: {
-          front_toe: { unit: '°', min: -0.50, max: 0.50, step: 0.01, default: 0.05, adjustable: true },
-          rear_toe:  { unit: '°', min:  0.00, max: 0.50, step: 0.01, default: 0.15, adjustable: true }
-        },
-        aerodynamics: {
-          front_downforce: { unit: null, min: 1, max: 10, step: 1, default: 5, adjustable: true },
-          rear_downforce:  { unit: null, min: 1, max: 10, step: 1, default: 6, adjustable: true }
-        }
-      },
-      dampers: {
-        front_dampers: {
-          slow_bump:    { unit: null, min: 0, max: 20, step: 1, default: 8,  adjustable: true },
-          slow_rebound: { unit: null, min: 0, max: 20, step: 1, default: 10, adjustable: true },
-          fast_bump:    { unit: null, min: 0, max: 20, step: 1, default: 6,  adjustable: true },
-          fast_rebound: { unit: null, min: 0, max: 20, step: 1, default: 8,  adjustable: true }
-        },
-        rear_dampers: {
-          slow_bump:    { unit: null, min: 0, max: 20, step: 1, default: 9,  adjustable: true },
-          slow_rebound: { unit: null, min: 0, max: 20, step: 1, default: 11, adjustable: true },
-          fast_bump:    { unit: null, min: 0, max: 20, step: 1, default: 7,  adjustable: true },
-          fast_rebound: { unit: null, min: 0, max: 20, step: 1, default: 9,  adjustable: true }
-        }
-      },
-      chassis: {
-        steering:  { steering_lock: { unit: '°', min: 10,  max: 26,  step: 1,   default: 17,  adjustable: true } },
-        alignment: { caster:        { unit: '°', min: 2.0, max: 8.0, step: 0.1, default: 4.5, adjustable: true } }
       }
     }
-  }
+  ]
 };
 
 // =============================================
@@ -712,35 +901,91 @@ let currentSetupName = '';
 let currentTrackName = '';
 let currentToolId = null;
 let isInBuilder = false;
+let selectedTemplateId = null;
+let linkState = {}; // uid -> boolean (true = linked L+R)
 
 // =============================================
-// LAUNCH TOOL (shows create / import choice)
+// LINK STATE HELPERS
+// =============================================
+function getLinkState(uid) { return uid in linkState ? linkState[uid] : true; }
+function setLinkState(uid, val) { linkState[uid] = val; }
+
+// =============================================
+// TEMPLATE HELPERS
+// =============================================
+function getUserTemplates(toolId) {
+  try { return JSON.parse(localStorage.getItem('user-templates-' + toolId) || '[]'); }
+  catch { return []; }
+}
+
+function saveUserTemplates(toolId, templates) {
+  localStorage.setItem('user-templates-' + toolId, JSON.stringify(templates));
+}
+
+function getTemplateList(toolId) {
+  return [...(carTemplates[toolId] || []), ...getUserTemplates(toolId)];
+}
+
+function deleteUserTemplate(toolId, templateId) {
+  const list = getUserTemplates(toolId).filter(t => t.id !== templateId);
+  saveUserTemplates(toolId, list);
+  if (selectedTemplateId === templateId) {
+    const first = getTemplateList(toolId)[0];
+    selectedTemplateId = first ? first.id : null;
+    currentSchema = first ? first.schema : null;
+  }
+  document.getElementById('tool-renderer').innerHTML = renderLaunchPanel(toolId, currentSchema);
+}
+
+// =============================================
+// LAUNCH TOOL (shows template selector + create/import choice)
 // =============================================
 function launchTool(toolId) {
-  const schema = toolSchemas[toolId];
-  if (!schema) return;
+  const templates = getTemplateList(toolId);
+  if (!templates.length) return;
 
   document.querySelectorAll('.tool-menu-card').forEach(c => c.classList.remove('active'));
   document.getElementById('card-' + toolId)?.classList.add('active');
 
-  currentSchema = schema;
+  if (!selectedTemplateId || currentToolId !== toolId) {
+    selectedTemplateId = templates[0].id;
+  }
+
+  const tpl = templates.find(t => t.id === selectedTemplateId) || templates[0];
+  currentSchema = tpl.schema;
   currentToolId = toolId;
   isInBuilder = false;
 
   const workspace = document.getElementById('tool-workspace');
   workspace.style.display = 'block';
-  document.getElementById('tool-renderer').innerHTML = renderLaunchPanel(toolId, schema);
+  document.getElementById('tool-renderer').innerHTML = renderLaunchPanel(toolId, currentSchema);
   setTimeout(() => workspace.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
 }
 
 function renderLaunchPanel(toolId, schema) {
+  const allTemplates = getTemplateList(toolId);
+  const templateOptions = allTemplates.map(tpl =>
+    `<option value="${escapeHtml(tpl.id)}"${tpl.id === selectedTemplateId ? ' selected' : ''}>${escapeHtml(tpl.name)}</option>`
+  ).join('');
+
+  const selectedTpl = allTemplates.find(t => t.id === selectedTemplateId);
+  const canDelete = selectedTpl && !selectedTpl.builtin;
+  const deleteBtn = canDelete
+    ? `<button class="btn-template-delete" onclick="deleteUserTemplate('${toolId}','${escapeHtml(selectedTemplateId)}')" title="${escapeHtml(getKey(t, 'ui.deleteTemplate'))}">✕</button>`
+    : '';
+
   return `
     <div class="tool-launch-panel">
-      <div class="tool-launch-header">
-        <span class="tool-launch-icon">🏁</span>
-        <div>
-          <div class="tool-launch-name">${schema.game}</div>
-          <div class="tool-launch-meta">${schema.game}</div>
+      <div class="template-selector-section">
+        <div class="template-section-label">${getKey(t, 'ui.selectTemplate')}</div>
+        <div class="template-selector-row">
+          <select class="setup-select" onchange="onTemplateChange('${toolId}', this.value)">
+            ${templateOptions}
+          </select>
+          ${deleteBtn}
+          <button class="btn-template-action" onclick="triggerImportTemplate('${toolId}')">
+            ↑ ${getKey(t, 'ui.importTemplate')}
+          </button>
         </div>
       </div>
       <div class="tool-launch-actions">
@@ -761,7 +1006,19 @@ function renderLaunchPanel(toolId, schema) {
       </div>
       <input type="file" id="import-file-${toolId}" accept=".json" style="display:none"
         onchange="importSetup(event,'${toolId}')"/>
+      <input type="file" id="import-template-${toolId}" accept=".json" style="display:none"
+        onchange="importTemplateFile(event,'${toolId}')"/>
     </div>`;
+}
+
+function onTemplateChange(toolId, templateId) {
+  selectedTemplateId = templateId;
+  const tpl = getTemplateList(toolId).find(t => t.id === templateId);
+  if (tpl) {
+    currentSchema = tpl.schema;
+    // Refresh delete button visibility
+    document.getElementById('tool-renderer').innerHTML = renderLaunchPanel(toolId, currentSchema);
+  }
 }
 
 // =============================================
@@ -770,9 +1027,10 @@ function renderLaunchPanel(toolId, schema) {
 function createNew(toolId) {
   currentSetupName = getKey(t, 'ui.newSetup');
   currentTrackName = '';
-  initValues(toolSchemas[toolId]);
+  linkState = {};
+  initValues(currentSchema);
   isInBuilder = true;
-  renderTool(toolSchemas[toolId]);
+  renderTool(currentSchema);
 }
 
 // =============================================
@@ -789,8 +1047,15 @@ function importSetup(event, toolId) {
   reader.onload = (e) => {
     try {
       const imported = JSON.parse(e.target.result);
-      const schema = toolSchemas[toolId];
-      if (!imported.setup) throw new Error('missing setup');
+      const schema = currentSchema;
+      if (!imported.setup) {
+        if (imported.categories) {
+          alert(getKey(t, 'ui.errorIsSchema'));
+        } else {
+          alert(getKey(t, 'ui.invalidJson'));
+        }
+        return;
+      }
 
       currentValues = {};
       for (const [catKey, cat] of Object.entries(schema.categories)) {
@@ -799,9 +1064,18 @@ function importSetup(event, toolId) {
           currentValues[catKey][subKey] = {};
           for (const [fieldKey, field] of Object.entries(sub)) {
             const v = imported.setup?.[catKey]?.[subKey]?.[fieldKey];
-            currentValues[catKey][subKey][fieldKey] = (v !== undefined)
-              ? Math.min(field.max, Math.max(field.min, Number(v)))
-              : field.default;
+            if (field.sides === 'both') {
+              const lv = (v && typeof v === 'object') ? v.left  : (v !== undefined ? Number(v) : field.default);
+              const rv = (v && typeof v === 'object') ? v.right : (v !== undefined ? Number(v) : field.default);
+              currentValues[catKey][subKey][fieldKey] = {
+                left:  Math.min(field.max, Math.max(field.min, lv)),
+                right: Math.min(field.max, Math.max(field.min, rv))
+              };
+            } else {
+              currentValues[catKey][subKey][fieldKey] = (v !== undefined)
+                ? Math.min(field.max, Math.max(field.min, Number(v)))
+                : field.default;
+            }
           }
         }
       }
@@ -810,6 +1084,7 @@ function importSetup(event, toolId) {
       currentTrackName = imported.track || '';
       currentSchema = schema;
       activeCategory = null;
+      linkState = {};
       isInBuilder = true;
       renderTool(schema);
     } catch {
@@ -818,6 +1093,58 @@ function importSetup(event, toolId) {
   };
   reader.readAsText(file);
   event.target.value = '';
+}
+
+// =============================================
+// IMPORT / EXPORT TEMPLATE
+// =============================================
+function triggerImportTemplate(toolId) {
+  document.getElementById('import-template-' + toolId)?.click();
+}
+
+function importTemplateFile(event, toolId) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const parsed = JSON.parse(e.target.result);
+      if (!parsed.categories || typeof parsed.categories !== 'object') throw new Error('invalid');
+
+      const userTemplates = getUserTemplates(toolId);
+      const newId = 'user-' + Date.now();
+      const newName = parsed.template_name || parsed.game || getKey(t, 'ui.importedTemplate');
+      const newSchema = { game: parsed.game || 'rFactor 2', categories: parsed.categories };
+
+      userTemplates.push({ id: newId, name: newName, builtin: false, schema: newSchema });
+      saveUserTemplates(toolId, userTemplates);
+
+      selectedTemplateId = newId;
+      currentSchema = newSchema;
+      document.getElementById('tool-renderer').innerHTML = renderLaunchPanel(toolId, currentSchema);
+    } catch {
+      alert(getKey(t, 'ui.invalidTemplate'));
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+}
+
+function exportTemplate() {
+  if (!currentSchema) return;
+  const tpl = getTemplateList(currentToolId).find(t => t.id === selectedTemplateId);
+  const obj = {
+    template_name: tpl ? tpl.name : currentSchema.game,
+    game: currentSchema.game,
+    categories: currentSchema.categories
+  };
+  const blob = new Blob([JSON.stringify(obj, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = (obj.template_name).replace(/[\s—]+/g, '_') + '_template.json';
+  a.click();
+  URL.revokeObjectURL(url);
 }
 
 // =============================================
@@ -830,7 +1157,11 @@ function initValues(schema) {
     for (const [subKey, sub] of Object.entries(cat)) {
       currentValues[catKey][subKey] = {};
       for (const [fieldKey, field] of Object.entries(sub)) {
-        currentValues[catKey][subKey][fieldKey] = field.default;
+        if (field.sides === 'both') {
+          currentValues[catKey][subKey][fieldKey] = { left: field.default, right: field.default };
+        } else {
+          currentValues[catKey][subKey][fieldKey] = field.default;
+        }
       }
     }
   }
@@ -884,6 +1215,7 @@ function renderTool(schema) {
       <button class="btn-reset" onclick="resetDefaults()">${getKey(t, 'ui.reset')}</button>
       <button class="btn-copy" id="btn-copy" onclick="copyJSON()">${getKey(t, 'ui.copy')}</button>
       <button class="btn btn-small" onclick="downloadJSON()">${getKey(t, 'ui.export')}</button>
+      <button class="btn btn-small" onclick="exportTemplate()">${getKey(t, 'ui.exportTemplate')}</button>
     </div>
   `;
 
@@ -912,18 +1244,18 @@ function renderCategoryContent(catKey, catData) {
 // =============================================
 function renderField(catKey, subKey, fieldKey, field) {
   const label = getKey(t, 'fields.' + fieldKey) || fieldKey;
-  const value = currentValues[catKey]?.[subKey]?.[fieldKey] ?? field.default;
   const uid = `${catKey}__${subKey}__${fieldKey}`;
   const decimals = (field.step.toString().split('.')[1] || '').length;
   const unit = field.unit ? ' ' + field.unit : '';
   const isFixed = field.min === field.max;
   const isAdjustable = field.adjustable !== false;
   const isDisabled = isFixed || !isAdjustable;
+  const isBoth = field.sides === 'both';
 
   const knowledgeKey = `${catKey}.${subKey}.${fieldKey}`;
   const knowledge = fieldKnowledge[knowledgeKey] || null;
 
-  const rowClass = ['field-row', isFixed ? 'field-fixed' : '', !isAdjustable ? 'field-locked' : '']
+  const rowClasses = ['field-row', isFixed ? 'field-fixed' : '', !isAdjustable ? 'field-locked' : '', isBoth ? 'field-both' : '']
     .filter(Boolean).join(' ');
 
   const infoTagsHtml = knowledge
@@ -933,8 +1265,74 @@ function renderField(catKey, subKey, fieldKey, field) {
     ? `<div class="field-info" id="info-${uid}"><p class="field-info-desc">${knowledge.description}</p><div class="field-info-tags">${infoTagsHtml}</div><div class="field-info-effects" id="fx-${uid}"></div></div>`
     : '';
 
+  const cfgPanel = `
+    <div class="field-config" id="cfg-${uid}">
+      <div class="cfg-inputs">
+        <div class="cfg-label-input"><span class="cfg-label">min</span>
+          <input type="number" class="cfg-input" value="${field.min}" step="${field.step}" onchange="updateFieldMeta('${uid}','min',this.value)"/></div>
+        <div class="cfg-label-input"><span class="cfg-label">max</span>
+          <input type="number" class="cfg-input" value="${field.max}" step="${field.step}" onchange="updateFieldMeta('${uid}','max',this.value)"/></div>
+        <div class="cfg-label-input"><span class="cfg-label">step</span>
+          <input type="number" class="cfg-input" value="${field.step}" step="any" onchange="updateFieldMeta('${uid}','step',this.value)"/></div>
+        <div class="cfg-label-input"><span class="cfg-label">default</span>
+          <input type="number" class="cfg-input" value="${field.default}" step="${field.step}" onchange="updateFieldMeta('${uid}','default',this.value)"/></div>
+      </div>
+      <label class="cfg-adjustable-row">
+        <input type="checkbox" class="cfg-adjustable-check" ${isAdjustable ? 'checked' : ''} onchange="updateAdjustable('${uid}', this.checked)"/>
+        <span class="cfg-toggle-track"><span class="cfg-toggle-thumb"></span></span>
+        <span class="cfg-label">${getKey(t, 'ui.adjustable')}</span>
+      </label>
+    </div>`;
+
+  if (isBoth) {
+    const stored = currentValues[catKey]?.[subKey]?.[fieldKey];
+    const vL = stored ? stored.left  : field.default;
+    const vR = stored ? stored.right : field.default;
+    const isLinked = getLinkState(uid);
+    const lbl = getKey(t, 'ui.leftLabel');
+    const rbl = getKey(t, 'ui.rightLabel');
+
+    return `
+      <div class="${rowClasses}" id="row-${uid}">
+        <div class="field-header">
+          <span class="field-label">${label}</span>
+          <div class="field-controls">
+            ${knowledge ? `<button class="field-info-btn" onclick="toggleFieldInfo('${uid}')">ℹ</button>` : ''}
+            <button class="field-cfg-btn" onclick="toggleFieldConfig('${uid}')">⚙</button>
+          </div>
+        </div>
+        <div class="sides-row">
+          <div class="side-col">
+            <div class="side-top">
+              <span class="side-label">${lbl}</span>
+              <span class="field-value" id="val-${uid}__L">${Number(vL).toFixed(decimals)}${unit}</span>
+              <span class="field-diff-badge" id="diff-${uid}__L" style="display:none"></span>
+            </div>
+            <input type="range" class="setup-slider" id="${uid}__L"
+              min="${field.min}" max="${field.max}" step="${field.step}" value="${vL}"
+              oninput="updateSlider('${uid}',this.value,'L')" ${isDisabled ? 'disabled' : ''}/>
+          </div>
+          <button class="field-link-btn${isLinked ? ' linked' : ''}" id="link-${uid}"
+            onclick="toggleLink('${uid}')" title="${getKey(t, 'ui.linked')}">🔗</button>
+          <div class="side-col">
+            <div class="side-top">
+              <span class="side-label">${rbl}</span>
+              <span class="field-value" id="val-${uid}__R">${Number(vR).toFixed(decimals)}${unit}</span>
+              <span class="field-diff-badge" id="diff-${uid}__R" style="display:none"></span>
+            </div>
+            <input type="range" class="setup-slider" id="${uid}__R"
+              min="${field.min}" max="${field.max}" step="${field.step}" value="${vR}"
+              oninput="updateSlider('${uid}',this.value,'R')" ${isDisabled ? 'disabled' : ''}/>
+          </div>
+        </div>
+        ${infoPanelHtml}
+        ${cfgPanel}
+      </div>`;
+  }
+
+  const value = currentValues[catKey]?.[subKey]?.[fieldKey] ?? field.default;
   return `
-    <div class="${rowClass}" id="row-${uid}">
+    <div class="${rowClasses}" id="row-${uid}">
       <div class="field-header">
         <span class="field-label">${label}</span>
         <div class="field-controls">
@@ -949,36 +1347,7 @@ function renderField(catKey, subKey, fieldKey, field) {
         oninput="updateSlider('${uid}', this.value)"
         ${isDisabled ? 'disabled' : ''}/>
       ${infoPanelHtml}
-      <div class="field-config" id="cfg-${uid}">
-        <div class="cfg-inputs">
-          <div class="cfg-label-input">
-            <span class="cfg-label">min</span>
-            <input type="number" class="cfg-input" value="${field.min}" step="${field.step}"
-              onchange="updateFieldMeta('${uid}','min',this.value)"/>
-          </div>
-          <div class="cfg-label-input">
-            <span class="cfg-label">max</span>
-            <input type="number" class="cfg-input" value="${field.max}" step="${field.step}"
-              onchange="updateFieldMeta('${uid}','max',this.value)"/>
-          </div>
-          <div class="cfg-label-input">
-            <span class="cfg-label">step</span>
-            <input type="number" class="cfg-input" value="${field.step}" step="any"
-              onchange="updateFieldMeta('${uid}','step',this.value)"/>
-          </div>
-          <div class="cfg-label-input">
-            <span class="cfg-label">default</span>
-            <input type="number" class="cfg-input" value="${field.default}" step="${field.step}"
-              onchange="updateFieldMeta('${uid}','default',this.value)"/>
-          </div>
-        </div>
-        <label class="cfg-adjustable-row">
-          <input type="checkbox" class="cfg-adjustable-check" ${isAdjustable ? 'checked' : ''}
-            onchange="updateAdjustable('${uid}', this.checked)"/>
-          <span class="cfg-toggle-track"><span class="cfg-toggle-thumb"></span></span>
-          <span class="cfg-label">${getKey(t, 'ui.adjustable')}</span>
-        </label>
-      </div>
+      ${cfgPanel}
     </div>`;
 }
 
@@ -990,41 +1359,100 @@ function updateAdjustable(uid, isAdjustable) {
   const field = currentSchema.categories[catKey][subKey][fieldKey];
   field.adjustable = isAdjustable;
   const row = document.getElementById('row-' + uid);
-  const slider = document.getElementById(uid);
   if (row) row.classList.toggle('field-locked', !isAdjustable);
-  if (slider) slider.disabled = !isAdjustable || field.min === field.max;
+  const isDisabled = !isAdjustable || field.min === field.max;
+  if (field.sides === 'both') {
+    const sL = document.getElementById(uid + '__L');
+    const sR = document.getElementById(uid + '__R');
+    if (sL) sL.disabled = isDisabled;
+    if (sR) sR.disabled = isDisabled;
+  } else {
+    const slider = document.getElementById(uid);
+    if (slider) slider.disabled = isDisabled;
+  }
 }
 
-function updateSlider(uid, rawValue) {
+// =============================================
+// DIFF BADGE HELPER
+// =============================================
+function updateDiffBadgeSide(uid, side, num, field) {
+  const knowledgeKey = uid.split('__').join('.');
+  if (!fieldKnowledge[knowledgeKey]) return;
+  const badgeId = side ? `diff-${uid}__${side}` : `diff-${uid}`;
+  const badge = document.getElementById(badgeId);
+  if (!badge) return;
+  const diff = num - field.default;
+  const decimals = (field.step.toString().split('.')[1] || '').length;
+  const unit = field.unit ? ' ' + field.unit : '';
+  if (Math.abs(diff) >= field.step * 0.5) {
+    badge.textContent = (diff > 0 ? '▲' : '▼') + ' ' + Number(field.default).toFixed(decimals) + unit;
+    badge.className = 'field-diff-badge ' + (diff > 0 ? 'up' : 'down');
+    badge.style.display = 'inline';
+  } else {
+    badge.style.display = 'none';
+  }
+}
+
+// =============================================
+// TOGGLE LINK (Esq. / Dir.)
+// =============================================
+function toggleLink(uid) {
+  const isNowLinked = !getLinkState(uid);
+  setLinkState(uid, isNowLinked);
+  const btn = document.getElementById('link-' + uid);
+  if (btn) btn.classList.toggle('linked', isNowLinked);
+  if (isNowLinked) {
+    // sync right to left
+    const [catKey, subKey, fieldKey] = uid.split('__');
+    const field = currentSchema.categories[catKey][subKey][fieldKey];
+    const leftVal = currentValues[catKey][subKey][fieldKey].left;
+    currentValues[catKey][subKey][fieldKey].right = leftVal;
+    const sR = document.getElementById(uid + '__R');
+    if (sR) sR.value = leftVal;
+    const dR = document.getElementById('val-' + uid + '__R');
+    const decimals = (field.step.toString().split('.')[1] || '').length;
+    const unit = field.unit ? ' ' + field.unit : '';
+    if (dR) dR.textContent = Number(leftVal).toFixed(decimals) + unit;
+    updateDiffBadgeSide(uid, 'R', leftVal, field);
+    refreshAnalyzeBadge();
+  }
+}
+
+function updateSlider(uid, rawValue, side) {
   const [catKey, subKey, fieldKey] = uid.split('__');
   const field = currentSchema.categories[catKey][subKey][fieldKey];
   const decimals = (field.step.toString().split('.')[1] || '').length;
   const unit = field.unit ? ' ' + field.unit : '';
   const num = parseFloat(rawValue);
 
-  currentValues[catKey][subKey][fieldKey] = num;
+  if (side) {
+    // Two-sided field
+    const sideKey = side === 'L' ? 'left' : 'right';
+    currentValues[catKey][subKey][fieldKey][sideKey] = num;
+    const display = document.getElementById('val-' + uid + '__' + side);
+    if (display) display.textContent = num.toFixed(decimals) + unit;
+    updateDiffBadgeSide(uid, side, num, field);
 
-  const display = document.getElementById('val-' + uid);
-  if (display) display.textContent = num.toFixed(decimals) + unit;
-
-  const diffBadge = document.getElementById('diff-' + uid);
-  if (diffBadge) {
-    const knowledgeKey = `${catKey}.${subKey}.${fieldKey}`;
-    const diff = num - field.default;
-    if (fieldKnowledge[knowledgeKey] && Math.abs(diff) >= field.step * 0.5) {
-      const defaultDisplay = Number(field.default).toFixed(decimals) + unit;
-      diffBadge.textContent = (diff > 0 ? '▲' : '▼') + ' ' + defaultDisplay;
-      diffBadge.className = 'field-diff-badge ' + (diff > 0 ? 'up' : 'down');
-      diffBadge.style.display = 'inline';
-    } else {
-      diffBadge.style.display = 'none';
+    if (getLinkState(uid)) {
+      const otherSide = side === 'L' ? 'R' : 'L';
+      const otherKey  = side === 'L' ? 'right' : 'left';
+      currentValues[catKey][subKey][fieldKey][otherKey] = num;
+      const sOther = document.getElementById(uid + '__' + otherSide);
+      if (sOther) sOther.value = num;
+      const dOther = document.getElementById('val-' + uid + '__' + otherSide);
+      if (dOther) dOther.textContent = num.toFixed(decimals) + unit;
+      updateDiffBadgeSide(uid, otherSide, num, field);
     }
+  } else {
+    currentValues[catKey][subKey][fieldKey] = num;
+    const display = document.getElementById('val-' + uid);
+    if (display) display.textContent = num.toFixed(decimals) + unit;
+    updateDiffBadgeSide(uid, null, num, field);
   }
 
   if (document.getElementById('row-' + uid)?.classList.contains('info-open')) {
     populateFieldInfoEffects(uid);
   }
-
   refreshAnalyzeBadge();
 }
 
@@ -1042,7 +1470,13 @@ function populateFieldInfoEffects(uid) {
   const fxEl = document.getElementById('fx-' + uid);
   if (!knowledge || !fxEl) return;
 
-  const current = currentValues[catKey]?.[subKey]?.[fieldKey] ?? field.default;
+  let current;
+  if (field.sides === 'both') {
+    const v = currentValues[catKey]?.[subKey]?.[fieldKey];
+    current = v ? (v.left + v.right) / 2 : field.default;
+  } else {
+    current = currentValues[catKey]?.[subKey]?.[fieldKey] ?? field.default;
+  }
   const diff = current - field.default;
 
   if (Math.abs(diff) < field.step * 0.5) {
@@ -1171,9 +1605,21 @@ function getAnalyzableChanges() {
         if (!fieldKnowledge[knowledgeKey]) continue;
         const current = currentValues[catKey]?.[subKey]?.[fieldKey];
         if (current === undefined) continue;
-        const diff = current - field.default;
-        if (Math.abs(diff) >= field.step * 0.5) {
-          changes.push({ field, current, diff, knowledge: fieldKnowledge[knowledgeKey] });
+
+        if (field.sides === 'both') {
+          const leftDiff  = current.left  - field.default;
+          const rightDiff = current.right - field.default;
+          const leftChanged  = Math.abs(leftDiff)  >= field.step * 0.5;
+          const rightChanged = Math.abs(rightDiff) >= field.step * 0.5;
+          if (leftChanged || rightChanged) {
+            changes.push({ field, current, diff: leftChanged ? leftDiff : rightDiff,
+              knowledge: fieldKnowledge[knowledgeKey], isBoth: true, leftDiff, rightDiff });
+          }
+        } else {
+          const diff = current - field.default;
+          if (Math.abs(diff) >= field.step * 0.5) {
+            changes.push({ field, current, diff, knowledge: fieldKnowledge[knowledgeKey] });
+          }
         }
       }
     }
@@ -1197,18 +1643,14 @@ function initDiffBadges() {
         const uid = `${catKey}__${subKey}__${fieldKey}`;
         const knowledgeKey = `${catKey}.${subKey}.${fieldKey}`;
         if (!fieldKnowledge[knowledgeKey]) continue;
-        const current = currentValues[catKey]?.[subKey]?.[fieldKey] ?? field.default;
-        const diff = current - field.default;
-        const badge = document.getElementById('diff-' + uid);
-        if (!badge) continue;
-        if (Math.abs(diff) >= field.step * 0.5) {
-          const decimals = (field.step.toString().split('.')[1] || '').length;
-          const unit = field.unit ? ' ' + field.unit : '';
-          badge.textContent = (diff > 0 ? '▲' : '▼') + ' ' + Number(field.default).toFixed(decimals) + unit;
-          badge.className = 'field-diff-badge ' + (diff > 0 ? 'up' : 'down');
-          badge.style.display = 'inline';
+        if (field.sides === 'both') {
+          const v = currentValues[catKey]?.[subKey]?.[fieldKey];
+          if (!v) continue;
+          updateDiffBadgeSide(uid, 'L', v.left,  field);
+          updateDiffBadgeSide(uid, 'R', v.right, field);
         } else {
-          badge.style.display = 'none';
+          const current = currentValues[catKey]?.[subKey]?.[fieldKey] ?? field.default;
+          updateDiffBadgeSide(uid, null, current, field);
         }
       }
     }
@@ -1224,10 +1666,24 @@ function showAnalysis() {
   if (changes.length === 0) {
     body = `<p class="analysis-empty">${getKey(t, 'ui.noChanges')}</p>`;
   } else {
-    for (const { field, current, diff, knowledge } of changes) {
+    for (const { field, current, diff, knowledge, isBoth, leftDiff, rightDiff } of changes) {
       const decimals = (field.step.toString().split('.')[1] || '').length;
       const unit = field.unit ? ' ' + field.unit : '';
-      const isUp = diff > 0;
+      let isUp, valHtml;
+      if (isBoth) {
+        const lbl = getKey(t, 'ui.leftLabel');
+        const rbl = getKey(t, 'ui.rightLabel');
+        isUp = (Math.abs(leftDiff) >= Math.abs(rightDiff)) ? leftDiff > 0 : rightDiff > 0;
+        const sameVal = Math.abs(current.left - current.right) < field.step * 0.5;
+        if (sameVal) {
+          valHtml = `<span class="analysis-current">${Number(current.left).toFixed(decimals)}${unit}</span>`;
+        } else {
+          valHtml = `<span class="analysis-current">${lbl}: ${Number(current.left).toFixed(decimals)}${unit} / ${rbl}: ${Number(current.right).toFixed(decimals)}${unit}</span>`;
+        }
+      } else {
+        isUp = diff > 0;
+        valHtml = `<span class="analysis-current">${Number(current).toFixed(decimals)}${unit}</span>`;
+      }
       const dirLabel = isUp ? getKey(t, 'ui.increased') : getKey(t, 'ui.decreased');
       const dirClass = isUp ? 'up' : 'down';
       const effects = isUp ? knowledge.effects.increase : knowledge.effects.decrease;
@@ -1240,7 +1696,7 @@ function showAnalysis() {
             <span class="analysis-dir ${dirClass}">${isUp ? '▲' : '▼'} ${dirLabel}</span>
           </div>
           <div class="analysis-values">
-            <span class="analysis-current">${Number(current).toFixed(decimals)}${unit}</span>
+            ${valHtml}
             <span class="analysis-sep">→</span>
             <span class="analysis-default">${Number(field.default).toFixed(decimals)}${unit} ${getKey(t, 'ui.defaultLabel')}</span>
           </div>
