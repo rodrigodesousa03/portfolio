@@ -239,7 +239,7 @@ const fieldKnowledge = {
       increase: ['Mais tração na saída; impede roda de dentro de girar sozinha', 'Tendência a subesterço ao acelerar em curvas lentas'],
       decrease: ['Mais rotação disponível na saída; carro mais vivo', 'Menor tração em saídas com piso molhado ou degradado']
     },
-    tags: ['saida', 'tracao', 'diferencial']
+    tags: ['saida', 'tracao']
   },
   'powertrain.differential.coast': {
     label: 'Diferencial (Desaceleração)',
@@ -248,7 +248,7 @@ const fieldKnowledge = {
       increase: ['Entrada de curva mais estável e previsível', 'Reduz capacidade de rotação no ápice'],
       decrease: ['Entrada mais agressiva e rotativa', 'Risco de instabilidade traseira ao frear dentro da curva']
     },
-    tags: ['entrada', 'estabilidade', 'diferencial']
+    tags: ['entrada', 'estabilidade']
   },
   'powertrain.differential.preload': {
     label: 'Pré-Carga do Diferencial',
@@ -257,7 +257,7 @@ const fieldKnowledge = {
       increase: ['Transições de aceleração/desaceleração mais suaves', 'Menos reativo a mudanças bruscas de carga em chicanes'],
       decrease: ['Diferencial mais reativo e nervoso', 'Mais instável em chicanes e em trechos de frenagem intensa']
     },
-    tags: ['transicao', 'estabilidade', 'diferencial']
+    tags: ['estabilidade', 'entrada']
   },
   'wheels_and_brakes.front_wheels.tire_pressure': {
     label: 'Pressão do Pneu Dianteiro',
@@ -284,7 +284,7 @@ const fieldKnowledge = {
       increase: ['Mais aderência na entrada e no ápice; favorece curvas rápidas', 'Desgaste acelerado na borda interna; perde grip em retas'],
       decrease: ['Melhor contato em retas e frenagens; pneu trabalha mais plano', 'Menor grip lateral no meio e saída de curva']
     },
-    tags: ['entrada', 'grip', 'desgaste']
+    tags: ['entrada', 'grip']
   },
   'wheels_and_brakes.rear_wheels.camber': {
     label: 'Câmber Traseiro',
@@ -293,7 +293,7 @@ const fieldKnowledge = {
       increase: ['Mais grip lateral em curvas; favorece curvas rápidas', 'Reduz área de contato em reta; desgaste interno acelerado'],
       decrease: ['Melhor tração e estabilidade em retas e frenagens', 'Menor aderência lateral em curvas; mais subesterço']
     },
-    tags: ['meio', 'saida', 'grip']
+    tags: ['saida', 'grip']
   },
   'wheels_and_brakes.brakes.brake_bias': {
     label: 'Distribuição de Freio',
@@ -311,7 +311,7 @@ const fieldKnowledge = {
       increase: ['Entrada de curva mais ágil e direta', 'Instabilidade e desgaste acelerado em retas de alta velocidade'],
       decrease: ['Maior estabilidade em retas e frenagens', 'Entrada de curva mais lenta; carro mais neutro']
     },
-    tags: ['entrada', 'direcao', 'estabilidade']
+    tags: ['entrada', 'estabilidade']
   },
   'suspension_and_aero.toe.rear_toe': {
     label: 'Convergência Traseira',
@@ -356,7 +356,7 @@ const fieldKnowledge = {
       increase: ['Transferência de peso mais controlada; mais tração sustentada na saída', 'Menos ágil em mudanças rápidas de direção'],
       decrease: ['Traseira reage mais rápido; favorece curvas rápidas', 'Menos tração sustentada; risco de perder aderência sob aceleração intensa']
     },
-    tags: ['saida', 'tracao', 'peso']
+    tags: ['saida', 'tracao', 'equilibrio']
   },
   'powertrain.engine.radiator_size': {
     label: 'Abertura do Radiador',
@@ -365,7 +365,7 @@ const fieldKnowledge = {
       increase: ['Motor trabalha mais frio; essencial em pistas quentes ou longas', 'Aumenta arrasto; perde tempo mensurável em retas de alta velocidade'],
       decrease: ['Menos arrasto; ganho real de velocidade em retas', 'Risco de superaquecimento em circuitos lentos ou em condições quentes']
     },
-    tags: ['reta', 'motor', 'temperatura']
+    tags: ['reta', 'temperatura']
   },
   'powertrain.electronics.brake_map': {
     label: 'Mapa de Freio Motor',
@@ -392,7 +392,7 @@ const fieldKnowledge = {
       increase: ['Mais torque disponível na largada e saídas lentas', 'Menor velocidade máxima na marcha; troca mais cedo para a 2ª'],
       decrease: ['Maior velocidade máxima na marcha; mais fluído', 'Menos torque em saídas muito lentas']
     },
-    tags: ['saida', 'aceleracao']
+    tags: ['saida', 'tracao']
   },
   'powertrain.gearing.gear_2': {
     label: '2ª Marcha',
@@ -401,7 +401,7 @@ const fieldKnowledge = {
       increase: ['Mais aceleração em curvas lentas a médias', 'Troca mais cedo para a 3ª; menor velocidade máxima'],
       decrease: ['Melhor continuidade de velocidade; menos trocas', 'Menos torque em saídas de curvas lentas']
     },
-    tags: ['saida', 'aceleracao']
+    tags: ['saida', 'tracao']
   },
   'powertrain.gearing.gear_3': {
     label: '3ª Marcha',
@@ -410,7 +410,7 @@ const fieldKnowledge = {
       increase: ['Mais aceleração no início da reta; ideal para circuitos técnicos', 'Menor velocidade no topo da marcha'],
       decrease: ['Mais velocidade máxima na marcha; favorece circuitos rápidos', 'Menos resposta ao sair de curvas médias']
     },
-    tags: ['meio', 'aceleracao']
+    tags: ['reta', 'tracao']
   },
   'powertrain.gearing.gear_4': {
     label: '4ª Marcha',
@@ -419,7 +419,7 @@ const fieldKnowledge = {
       increase: ['Mais aceleração; melhor em retas médias', 'Atinge rotação máxima antes do fim da reta'],
       decrease: ['Maior velocidade máxima na marcha; favorece retas longas', 'Menos resposta ao acelerar no início da reta']
     },
-    tags: ['reta', 'aceleracao']
+    tags: ['reta', 'tracao']
   },
   'powertrain.gearing.gear_5': {
     label: '5ª Marcha',
@@ -428,7 +428,7 @@ const fieldKnowledge = {
       increase: ['Mais aceleração ao entrar na reta; sai melhor da última curva', 'Atinge o limitador antes do fim de retas longas'],
       decrease: ['Maior velocidade final; essencial em pistas de alta velocidade', 'Menos aceleração ao sair da última curva antes da reta']
     },
-    tags: ['reta', 'velocidade_maxima']
+    tags: ['reta']
   },
   'powertrain.gearing.final_drive': {
     label: 'Relação Final',
@@ -437,7 +437,7 @@ const fieldKnowledge = {
       increase: ['Mais aceleração em todas as marchas; mais torque disponível', 'Menor velocidade máxima; motor bate no limitador antes do fim da reta'],
       decrease: ['Maior velocidade máxima; ideal para pistas de alta velocidade', 'Menor aceleração; saídas de curva menos responsivas']
     },
-    tags: ['reta', 'aceleracao', 'velocidade_maxima']
+    tags: ['reta', 'tracao']
   },
   'wheels_and_brakes.brakes.max_pedal_force': {
     label: 'Força Máxima do Pedal',
@@ -446,7 +446,7 @@ const fieldKnowledge = {
       increase: ['Pedal mais firme e linear; maior precisão na modulação', 'Exige mais esforço físico; menos tolerante a erros de pisada'],
       decrease: ['Pedal mais leve e sensível; menos cansativo em corridas longas', 'Menor controle na zona limite; risco de trava acidental']
     },
-    tags: ['frenagem', 'controle']
+    tags: ['frenagem']
   },
   'wheels_and_brakes.brakes.front_brake_duct': {
     label: 'Duto de Freio Dianteiro',
@@ -455,7 +455,7 @@ const fieldKnowledge = {
       increase: ['Freios dianteiros mais frios; consistência em corridas longas e pistas quentes', 'Leve aumento de arrasto; perda mínima de velocidade em reta'],
       decrease: ['Menos arrasto; freios chegam à temperatura de trabalho mais rápido', 'Risco de superaquecimento e perda de eficiência em corridas com muitas frenagens']
     },
-    tags: ['frenagem', 'temperatura', 'consistencia']
+    tags: ['frenagem', 'temperatura']
   },
   'wheels_and_brakes.brakes.rear_brake_duct': {
     label: 'Duto de Freio Traseiro',
@@ -491,7 +491,7 @@ const fieldKnowledge = {
       increase: ['Mais viagem de suspensão; mais estável em pistas irregulares', 'Perde downforce por efeito solo; menor eficiência aerodinâmica'],
       decrease: ['Mais downforce por efeito solo; menor centro de gravidade', 'Risco de raspar o fundo em curvas rápidas ou lombadas']
     },
-    tags: ['aero', 'altura', 'efeito_solo']
+    tags: ['aero', 'estabilidade']
   },
   'suspension_and_aero.rear_suspension.ride_height': {
     label: 'Altura de Rodagem Traseira',
@@ -500,7 +500,7 @@ const fieldKnowledge = {
       increase: ['Mais estabilidade em retas; mais folga ao solo', 'Reduz eficiência do difusor traseiro; perde carga aerodinâmica na traseira'],
       decrease: ['Difusor trabalha melhor; mais carga aerodinâmica traseira', 'Risco de raspar o fundo; sensível a ondulações do circuito']
     },
-    tags: ['aero', 'altura', 'efeito_solo']
+    tags: ['aero', 'estabilidade']
   },
   'suspension_and_aero.aerodynamics.front_downforce': {
     label: 'Pressão Aerodinâmica Dianteira',
@@ -527,7 +527,7 @@ const fieldKnowledge = {
       increase: ['Transferência de peso mais controlada; dianteira não oscila após curvas', 'Reduz a rotação; carro mais neutro no ápice'],
       decrease: ['Dianteira sobe mais rápido; mais ágil em chicanes', 'Menos controle de peso; pode oscilar em sequências de curvas']
     },
-    tags: ['entrada', 'peso', 'apex']
+    tags: ['entrada', 'equilibrio']
   },
   'dampers.front_dampers.fast_bump': {
     label: 'Compressão Rápida Dianteira',
@@ -536,7 +536,7 @@ const fieldKnowledge = {
       increase: ['Geometria mais estável em meios-fios; menos deformação brusca', 'Menos absorção; risco de salto e perda de contato em bordas de pista'],
       decrease: ['Absorve melhor zebras; permite usar bordas de pista agressivamente', 'Dianteira mais instável em impactos; geometria varia mais']
     },
-    tags: ['zebra', 'irregularidade']
+    tags: ['irregularidade']
   },
   'dampers.front_dampers.fast_rebound': {
     label: 'Extensão Rápida Dianteira',
@@ -545,7 +545,7 @@ const fieldKnowledge = {
       increase: ['Dianteira mais estável após impacto; menos oscilação em sequências', 'Pneu demora para retornar ao solo; perda de grip momentânea'],
       decrease: ['Pneu retorna ao solo mais rápido; mais aderência após zebra', 'Dianteira mais agitada em sequências de irregularidades']
     },
-    tags: ['zebra', 'irregularidade', 'grip']
+    tags: ['irregularidade', 'grip']
   },
   'dampers.rear_dampers.slow_bump': {
     label: 'Compressão Lenta Traseira',
@@ -554,7 +554,7 @@ const fieldKnowledge = {
       increase: ['Menor afundamento ao acelerar; saída mais estável', 'Pode reduzir tração em saídas muito lentas ou irregulares'],
       decrease: ['Traseira comprime mais ao acelerar; mais tração disponível', 'Mais instável em saídas rápidas; altura dinâmica varia mais']
     },
-    tags: ['saida', 'tracao', 'peso']
+    tags: ['saida', 'tracao', 'equilibrio']
   },
   'dampers.rear_dampers.fast_bump': {
     label: 'Compressão Rápida Traseira',
@@ -563,7 +563,7 @@ const fieldKnowledge = {
       increase: ['Traseira mais rígida em impactos; geometria menos afetada', 'Menor absorção; instabilidade após meios-fios traseiros'],
       decrease: ['Absorve melhor irregularidades traseiras; mais tração em pistas irregulares', 'Traseira mais reativa; risco de sobresterço após impactos']
     },
-    tags: ['zebra', 'irregularidade', 'saida']
+    tags: ['irregularidade', 'saida']
   },
   'dampers.rear_dampers.fast_rebound': {
     label: 'Extensão Rápida Traseira',
@@ -572,7 +572,7 @@ const fieldKnowledge = {
       increase: ['Traseira mais estável após impacto; menos oscilação', 'Pneu traseiro demora a retornar ao solo; perda de tração momentânea'],
       decrease: ['Pneu traseiro retorna rápido; mais tração após zebra', 'Traseira mais agitada em sequências de irregularidades']
     },
-    tags: ['zebra', 'tracao', 'irregularidade']
+    tags: ['irregularidade', 'tracao']
   },
   'chassis.steering.steering_lock': {
     label: 'Ângulo de Volante',
@@ -581,7 +581,7 @@ const fieldKnowledge = {
       increase: ['Mais capacidade de virada; útil em traçados técnicos com curvas lentas', 'Requer mais movimentação do volante; pode reduzir precisão em curvas rápidas'],
       decrease: ['Movimentos menores e mais precisos; ideal para traçados rápidos', 'Menor capacidade em curvas muito fechadas; dificulta manobras']
     },
-    tags: ['direcao', 'manobrabilidade']
+    tags: ['entrada']
   },
   'chassis.alignment.caster': {
     label: 'Cáster',
@@ -590,7 +590,7 @@ const fieldKnowledge = {
       increase: ['Mais câmber dinâmico; melhor grip em curvas rápidas e esterços amplos', 'Direção mais pesada; auto-centragem mais forte ao sair da curva'],
       decrease: ['Direção mais leve; menos esforço físico em ruas e chicanes', 'Menos câmber dinâmico; menor grip em curvas de alta velocidade']
     },
-    tags: ['direcao', 'grip', 'curva_rapida']
+    tags: ['entrada', 'grip']
   },
   'wheels_and_brakes.front_wheels.brake_disc': {
     label: 'Disco de Freio Dianteiro',
@@ -599,7 +599,7 @@ const fieldKnowledge = {
       increase: ['Maior capacidade de frenagem; resistência ao fading em corridas longas', 'Maior massa não suspensa; pode afetar levemente a resposta da suspensão'],
       decrease: ['Menor massa; disco atinge temperatura ideal mais rápido em pistas frias', 'Menor resistência ao fading; pode perder eficiência em corridas longas']
     },
-    tags: ['frenagem', 'temperatura', 'consistencia']
+    tags: ['frenagem', 'temperatura']
   },
   'wheels_and_brakes.rear_wheels.brake_disc': {
     label: 'Disco de Freio Traseiro',
@@ -617,7 +617,7 @@ const fieldKnowledge = {
       increase: ['Maior capacidade de travar as rodas traseiras; mais rotação em hairpins', 'Risco de girar o carro se usado em velocidade elevada'],
       decrease: ['Menos interferência do freio de mão; mais seguro', 'Menor capacidade de rotação forçada; menos eficiente em hairpins']
     },
-    tags: ['hairpin', 'manobrabilidade', 'baixa_velocidade']
+    tags: ['frenagem', 'entrada']
   },
   'suspension_and_aero.front_suspension.tender_spring_rate': {
     label: 'Mola Auxiliar Dianteira',
@@ -626,7 +626,7 @@ const fieldKnowledge = {
       increase: ['Transição inicial mais rígida; menos compressão em baixa carga', 'Menor absorção em irregularidades suaves'],
       decrease: ['Compressão inicial mais suave; melhor contato em ondulações', 'Pode permitir que a mola principal trabalhe antes do esperado']
     },
-    tags: ['conforto', 'transicao', 'irregularidade']
+    tags: ['irregularidade', 'entrada']
   },
   'suspension_and_aero.front_suspension.packers': {
     label: 'Espaçadores Dianteiros',
@@ -635,7 +635,7 @@ const fieldKnowledge = {
       increase: ['Menor curso de compressão; controle mais preciso da altura em alta velocidade', 'Suspensão chega mais rápido ao batente; pode bater em pisos irregulares'],
       decrease: ['Mais curso disponível; melhor absorção de pisos irregulares', 'Altura dinâmica varia mais; impacto na eficiência aerodinâmica']
     },
-    tags: ['aero', 'altura', 'curso']
+    tags: ['aero', 'irregularidade']
   },
   'suspension_and_aero.front_suspension.spring_rubber': {
     label: 'Borracha de Mola Dianteira',
@@ -644,7 +644,7 @@ const fieldKnowledge = {
       increase: ['Mais rigidez ao final do curso; limita compressão máxima', 'Reduz absorção de irregularidades quando a suspensão está comprimida'],
       decrease: ['Suspensão mais linear; mais curso suave disponível', 'Menor controle da altura mínima em compressão máxima']
     },
-    tags: ['progressividade', 'curso', 'altura']
+    tags: ['aero', 'irregularidade']
   },
   'suspension_and_aero.rear_suspension.tender_spring_rate': {
     label: 'Mola Auxiliar Traseira',
@@ -653,7 +653,7 @@ const fieldKnowledge = {
       increase: ['Transição inicial mais rígida; menos sensível a micro-ondulações', 'Menor tração em saídas de curva em piso irregular'],
       decrease: ['Compressão inicial mais suave; mais tração em saídas', 'Pode deixar a traseira mais baixa antes de acionar a mola principal']
     },
-    tags: ['saida', 'tracao', 'transicao']
+    tags: ['saida', 'tracao']
   },
   'suspension_and_aero.rear_suspension.packers': {
     label: 'Espaçadores Traseiros',
@@ -662,7 +662,7 @@ const fieldKnowledge = {
       increase: ['Menor compressão traseira; controle de altura mais preciso', 'Menos tração em saídas com transferência de peso intensa'],
       decrease: ['Mais curso; melhor tração em saídas e pistas irregulares', 'Altura traseira varia mais; dificulta ajuste de equilíbrio aerodinâmico']
     },
-    tags: ['saida', 'tracao', 'curso']
+    tags: ['saida', 'tracao', 'aero']
   },
   'suspension_and_aero.rear_suspension.spring_rubber': {
     label: 'Borracha de Mola Traseira',
@@ -671,7 +671,7 @@ const fieldKnowledge = {
       increase: ['Mais rigidez em compressão total; controla melhor o fundo do curso', 'Pode reduzir tração ao endurecer a traseira no limite'],
       decrease: ['Suspensão traseira mais linear; mais tração disponível', 'Menor controle da altura mínima ao acelerar']
     },
-    tags: ['saida', 'progressividade', 'tracao']
+    tags: ['saida', 'tracao']
   },
   'chassis.alignment.fender_flare': {
     label: 'Expansão do Para-lama',
@@ -680,7 +680,7 @@ const fieldKnowledge = {
       increase: ['Acomoda bitola mais larga ou mais câmber negativo', 'Possível aumento de arrasto lateral dependendo da regulagem'],
       decrease: ['Bitola mais estreita; menor arrasto lateral', 'Limita o câmber máximo ou a largura de pneu utilizada']
     },
-    tags: ['geometria', 'regulamento']
+    tags: ['estabilidade']
   },
   'chassis.alignment.track_bar': {
     label: 'Barra Panhard',
@@ -689,7 +689,7 @@ const fieldKnowledge = {
       increase: ['Centro de rolagem traseiro mais alto; menos rolagem lateral', 'Altera equilíbrio entre curvas para esquerda e direita'],
       decrease: ['Centro de rolagem mais baixo; mais rolagem; mais grip em curvas lentas', 'Mudança de comportamento assimétrico entre os lados do circuito']
     },
-    tags: ['equilibrio', 'rolagem', 'eixo_rigido']
+    tags: ['equilibrio']
   },
   'chassis.alignment.front_wheel_track': {
     label: 'Bitola Dianteira',
@@ -698,7 +698,7 @@ const fieldKnowledge = {
       increase: ['Mais estabilidade lateral em retas e curvas rápidas', 'Menor agilidade em mudanças bruscas de direção'],
       decrease: ['Mais agilidade e rotação; carro responde mais rápido na entrada', 'Menor estabilidade lateral em curvas de alta velocidade']
     },
-    tags: ['entrada', 'estabilidade', 'geometria']
+    tags: ['entrada', 'estabilidade']
   },
   'chassis.alignment.rear_wheel_track': {
     label: 'Bitola Traseira',
@@ -707,7 +707,7 @@ const fieldKnowledge = {
       increase: ['Mais estabilidade lateral traseira; reduz tendência ao sobresterço', 'Menos rotação disponível na entrada de curva'],
       decrease: ['Carro mais rotativo; mais sobresterço disponível', 'Menor estabilidade traseira em curvas rápidas']
     },
-    tags: ['saida', 'estabilidade', 'geometria']
+    tags: ['saida', 'estabilidade']
   },
   'chassis.weight.vertical': {
     label: 'Centro de Gravidade Vertical',
@@ -716,7 +716,7 @@ const fieldKnowledge = {
       increase: ['Maior transferência de peso lateral; mais rolagem em curvas', 'Maior sensibilidade a mudanças bruscas de direção'],
       decrease: ['Menor transferência de peso; mais estável em curvas rápidas', 'Menos rolagem; plataforma aerodinâmica mais constante']
     },
-    tags: ['peso', 'estabilidade', 'equilibrio']
+    tags: ['estabilidade', 'equilibrio']
   },
   'chassis.weight.lateral': {
     label: 'Centro de Gravidade Lateral',
@@ -725,7 +725,7 @@ const fieldKnowledge = {
       increase: ['Mais carga em um lado; favorece curvas nesse sentido', 'Assimetria de comportamento entre curvas à esquerda e à direita'],
       decrease: ['Distribuição mais centralizada; comportamento mais simétrico', 'Pode prejudicar curvas onde mais carga lateral ajudaria']
     },
-    tags: ['equilibrio', 'simetria', 'peso']
+    tags: ['equilibrio']
   },
   'chassis.weight.weight_distribution': {
     label: 'Distribuição de Peso',
@@ -743,7 +743,7 @@ const fieldKnowledge = {
       increase: ['Mais carga no par diagonal; melhora estabilidade em curvas para um lado', 'Cria assimetria; pode prejudicar curvas no sentido oposto'],
       decrease: ['Menor assimetria diagonal; comportamento mais simétrico', 'Pode reduzir estabilidade em circuitos ovalados']
     },
-    tags: ['equilibrio', 'ovalo', 'peso']
+    tags: ['equilibrio']
   }
 };
 
