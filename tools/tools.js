@@ -109,7 +109,10 @@ const toolsI18n = {
       deleteTemplate: 'Excluir Template',
       linked: 'Vinculado',
       leftLabel: 'Esq.',
-      rightLabel: 'Dir.'
+      rightLabel: 'Dir.',
+      hideFixed: 'Ocultar campos fixos',
+      showFixed: 'Mostrar campos fixos',
+      symWarning: 'Idealmente Esq. = Dir.'
     }
   },
   en: {
@@ -219,7 +222,10 @@ const toolsI18n = {
       deleteTemplate: 'Delete Template',
       linked: 'Linked',
       leftLabel: 'L',
-      rightLabel: 'R'
+      rightLabel: 'R',
+      hideFixed: 'Hide fixed fields',
+      showFixed: 'Show fixed fields',
+      symWarning: 'Ideally L = R'
     }
   }
 };
@@ -888,6 +894,159 @@ const fieldKnowledge = {
       decrease: ['Direção mais leve', 'Menor estabilidade']
     },
     tags: ['direcao', 'estabilidade']
+  },
+  'wheels_and_brakes.front_wheels.brake_disc': {
+    label: 'Disco de Freio Dianteiro',
+    description: 'Define o tamanho ou composto do disco de freio dianteiro.',
+    effects: {
+      increase: ['Maior capacidade de frenagem', 'Maior resistência ao fading'],
+      decrease: ['Menor eficiência de frenagem', 'Menor massa não suspensa']
+    },
+    tags: ['frenagem', 'consistencia']
+  },
+  'wheels_and_brakes.rear_wheels.brake_disc': {
+    label: 'Disco de Freio Traseiro',
+    description: 'Define o desempenho do freio traseiro.',
+    effects: {
+      increase: ['Mais força de frenagem traseira', 'Maior risco de instabilidade'],
+      decrease: ['Mais estabilidade', 'Menor eficiência de frenagem traseira']
+    },
+    tags: ['frenagem', 'estabilidade']
+  },
+  'wheels_and_brakes.brakes.handbrake_pressure': {
+    label: 'Pressão do Freio de Mão',
+    description: 'Controla a força aplicada pelo freio de mão.',
+    effects: {
+      increase: ['Maior capacidade de travar rodas traseiras', 'Mais rotação em baixa velocidade'],
+      decrease: ['Menor interferência', 'Menor capacidade de rotação forçada']
+    },
+    tags: ['manobra', 'baixa_velocidade']
+  },
+  'suspension_and_aero.front_suspension.tender_spring_rate': {
+    label: 'Mola Auxiliar Dianteira',
+    description: 'Controla a suavidade inicial da suspensão dianteira.',
+    effects: {
+      increase: ['Resposta mais rígida inicial', 'Menor absorção de irregularidades'],
+      decrease: ['Mais conforto', 'Melhor contato com o solo']
+    },
+    tags: ['entrada', 'conforto']
+  },
+  'suspension_and_aero.front_suspension.packers': {
+    label: 'Espaçadores Dianteiros',
+    description: 'Limita o curso da suspensão dianteira.',
+    effects: {
+      increase: ['Menor curso de suspensão', 'Mais controle aerodinâmico'],
+      decrease: ['Mais curso de suspensão', 'Melhor absorção']
+    },
+    tags: ['aero', 'suspensao']
+  },
+  'suspension_and_aero.front_suspension.spring_rubber': {
+    label: 'Borracha de Mola Dianteira',
+    description: 'Adiciona rigidez progressiva à mola.',
+    effects: {
+      increase: ['Mais rigidez no fim do curso', 'Menos compressão'],
+      decrease: ['Suspensão mais linear', 'Mais curso disponível']
+    },
+    tags: ['progressividade']
+  },
+  'suspension_and_aero.rear_suspension.tender_spring_rate': {
+    label: 'Mola Auxiliar Traseira',
+    description: 'Controla o comportamento inicial da traseira.',
+    effects: {
+      increase: ['Resposta mais direta', 'Menos tração em irregularidades'],
+      decrease: ['Mais tração', 'Mais absorção']
+    },
+    tags: ['saida', 'tracao']
+  },
+  'suspension_and_aero.rear_suspension.packers': {
+    label: 'Espaçadores Traseiros',
+    description: 'Limita o curso da suspensão traseira.',
+    effects: {
+      increase: ['Menos transferência de peso', 'Mais previsibilidade'],
+      decrease: ['Mais transferência', 'Mais tração']
+    },
+    tags: ['peso', 'saida']
+  },
+  'suspension_and_aero.rear_suspension.spring_rubber': {
+    label: 'Borracha de Mola Traseira',
+    description: 'Adiciona progressividade na traseira.',
+    effects: {
+      increase: ['Mais rigidez em compressão', 'Menos tração em limite'],
+      decrease: ['Mais tração', 'Suspensão mais livre']
+    },
+    tags: ['saida', 'tracao']
+  },
+  'chassis.alignment.fender_flare': {
+    label: 'Expansão do Para-lama',
+    description: 'Permite ajuste de largura para acomodar pneus.',
+    effects: {
+      increase: ['Permite maior bitola', 'Possível impacto aerodinâmico'],
+      decrease: ['Menor largura', 'Menor arrasto']
+    },
+    tags: ['aero', 'geometria']
+  },
+  'chassis.alignment.track_bar': {
+    label: 'Barra Panhard',
+    description: 'Controla a posição lateral do eixo traseiro.',
+    effects: {
+      increase: ['Altera equilíbrio lateral', 'Impacta tração em curva'],
+      decrease: ['Mudança no centro de rolagem', 'Impacto na estabilidade']
+    },
+    tags: ['equilibrio', 'tracao']
+  },
+  'chassis.alignment.front_wheel_track': {
+    label: 'Bitola Dianteira',
+    description: 'Distância entre rodas dianteiras.',
+    effects: {
+      increase: ['Mais estabilidade lateral', 'Menor agilidade'],
+      decrease: ['Mais agilidade', 'Menos estabilidade']
+    },
+    tags: ['entrada', 'estabilidade']
+  },
+  'chassis.alignment.rear_wheel_track': {
+    label: 'Bitola Traseira',
+    description: 'Distância entre rodas traseiras.',
+    effects: {
+      increase: ['Mais estabilidade', 'Menos rotação'],
+      decrease: ['Mais rotação', 'Menor estabilidade']
+    },
+    tags: ['saida', 'estabilidade']
+  },
+  'chassis.weight.vertical': {
+    label: 'Centro de Gravidade Vertical',
+    description: 'Altura do centro de gravidade.',
+    effects: {
+      increase: ['Mais rolagem', 'Menor estabilidade'],
+      decrease: ['Mais estabilidade', 'Menor transferência de peso']
+    },
+    tags: ['peso', 'estabilidade']
+  },
+  'chassis.weight.lateral': {
+    label: 'Centro de Gravidade Lateral',
+    description: 'Distribuição lateral do peso.',
+    effects: {
+      increase: ['Mais carga em um lado', 'Mudança de comportamento em curvas'],
+      decrease: ['Mais equilíbrio', 'Comportamento previsível']
+    },
+    tags: ['equilibrio']
+  },
+  'chassis.weight.weight_distribution': {
+    label: 'Distribuição de Peso',
+    description: 'Distribuição de peso entre frente e traseira.',
+    effects: {
+      increase: ['Mais peso na dianteira', 'Mais understeer'],
+      decrease: ['Mais peso na traseira', 'Mais tração']
+    },
+    tags: ['entrada', 'saida']
+  },
+  'chassis.weight.wedge': {
+    label: 'Cunha (Wedge)',
+    description: 'Distribuição diagonal de peso.',
+    effects: {
+      increase: ['Mais estabilidade em aceleração', 'Menos rotação'],
+      decrease: ['Mais rotação', 'Menor estabilidade']
+    },
+    tags: ['equilibrio', 'saida']
   }
 };
 
@@ -903,6 +1062,14 @@ let currentToolId = null;
 let isInBuilder = false;
 let selectedTemplateId = null;
 let linkState = {}; // uid -> boolean (true = linked L+R)
+let showFixedFields = true;
+
+// Fields where L === R is ideal (symmetric setup warning)
+const symmetricFields = new Set([
+  'brake_disc', 'spring_rate', 'packers', 'spring_rubber', 'tender_spring_rate',
+  'ride_height', 'slow_bump', 'fast_bump', 'slow_rebound', 'fast_rebound',
+  'front_wheel_track', 'rear_wheel_track'
+]);
 
 // =============================================
 // LINK STATE HELPERS
@@ -1216,6 +1383,7 @@ function renderTool(schema) {
       <button class="btn-copy" id="btn-copy" onclick="copyJSON()">${getKey(t, 'ui.copy')}</button>
       <button class="btn btn-small" onclick="downloadJSON()">${getKey(t, 'ui.export')}</button>
       <button class="btn btn-small" onclick="exportTemplate()">${getKey(t, 'ui.exportTemplate')}</button>
+      <button class="btn btn-small btn-toggle-fixed" id="btn-toggle-fixed" onclick="toggleFixedFields()">${showFixedFields ? getKey(t, 'ui.hideFixed') : getKey(t, 'ui.showFixed')}</button>
     </div>
   `;
 
@@ -1291,11 +1459,18 @@ function renderField(catKey, subKey, fieldKey, field) {
     const isLinked = getLinkState(uid);
     const lbl = getKey(t, 'ui.leftLabel');
     const rbl = getKey(t, 'ui.rightLabel');
+    const isSym = symmetricFields.has(fieldKey);
+    const asymmetric = isSym && Math.abs(vL - vR) >= field.step * 0.5;
+    const symSpan = isSym
+      ? `<span class="field-sym-warn${asymmetric ? ' visible' : ''}" id="sym-${uid}" title="${getKey(t, 'ui.symWarning')}">⚠</span>`
+      : '';
 
     return `
       <div class="${rowClasses}" id="row-${uid}">
         <div class="field-header">
-          <span class="field-label">${label}</span>
+          <div class="field-label-wrap">
+            <span class="field-label">${label}</span>${symSpan}
+          </div>
           <div class="field-controls">
             ${knowledge ? `<button class="field-info-btn" onclick="toggleFieldInfo('${uid}')">ℹ</button>` : ''}
             <button class="field-cfg-btn" onclick="toggleFieldConfig('${uid}')">⚙</button>
@@ -1313,7 +1488,7 @@ function renderField(catKey, subKey, fieldKey, field) {
               oninput="updateSlider('${uid}',this.value,'L')" ${isDisabled ? 'disabled' : ''}/>
           </div>
           <button class="field-link-btn${isLinked ? ' linked' : ''}" id="link-${uid}"
-            onclick="toggleLink('${uid}')" title="${getKey(t, 'ui.linked')}">🔗</button>
+            onclick="toggleLink('${uid}')" title="${getKey(t, 'ui.linked')}">${isLinked ? '🔒' : '🔓'}</button>
           <div class="side-col">
             <div class="side-top">
               <span class="side-label">${rbl}</span>
@@ -1336,7 +1511,7 @@ function renderField(catKey, subKey, fieldKey, field) {
       <div class="field-header">
         <span class="field-label">${label}</span>
         <div class="field-controls">
-          <span class="field-value" id="val-${uid}">${Number(value).toFixed(decimals)}${unit}</span>
+          <span class="field-value" id="val-${uid}">${formatFieldDisplay(fieldKey, Number(value), decimals, unit)}</span>
           <span class="field-diff-badge" id="diff-${uid}" style="display:none"></span>
           ${knowledge ? `<button class="field-info-btn" onclick="toggleFieldInfo('${uid}')">ℹ</button>` : ''}
           <button class="field-cfg-btn" onclick="toggleFieldConfig('${uid}')">⚙</button>
@@ -1396,11 +1571,43 @@ function updateDiffBadgeSide(uid, side, num, field) {
 // =============================================
 // TOGGLE LINK (Esq. / Dir.)
 // =============================================
-function toggleLink(uid) {
-  const isNowLinked = !getLinkState(uid);
+// =============================================
+// FIXED FIELDS VISIBILITY
+// =============================================
+function applyFixedVisibility() {
+  document.querySelectorAll('.field-row.field-locked, .field-row.field-fixed').forEach(el => {
+    el.style.display = showFixedFields ? '' : 'none';
+  });
+  const btn = document.getElementById('btn-toggle-fixed');
+  if (btn) btn.textContent = showFixedFields ? getKey(t, 'ui.hideFixed') : getKey(t, 'ui.showFixed');
+}
+
+function toggleFixedFields() {
+  showFixedFields = !showFixedFields;
+  applyFixedVisibility();
+}
+
+// =============================================
+// SYMMETRIC WARNING
+// =============================================
+function updateSymWarning(uid) {
+  const [catKey, subKey, fieldKey] = uid.split('__');
+  if (!symmetricFields.has(fieldKey)) return;
+  const field = currentSchema?.categories[catKey]?.[subKey]?.[fieldKey];
+  if (!field) return;
+  const v = currentValues[catKey]?.[subKey]?.[fieldKey];
+  if (!v) return;
+  const warn = document.getElementById('sym-' + uid);
+  if (warn) warn.classList.toggle('visible', Math.abs(v.left - v.right) >= field.step * 0.5);
+}
+
+function toggleLink(uid) {  const isNowLinked = !getLinkState(uid);
   setLinkState(uid, isNowLinked);
   const btn = document.getElementById('link-' + uid);
-  if (btn) btn.classList.toggle('linked', isNowLinked);
+  if (btn) {
+    btn.classList.toggle('linked', isNowLinked);
+    btn.textContent = isNowLinked ? '🔒' : '🔓';
+  }
   if (isNowLinked) {
     // sync right to left
     const [catKey, subKey, fieldKey] = uid.split('__');
@@ -1414,8 +1621,17 @@ function toggleLink(uid) {
     const unit = field.unit ? ' ' + field.unit : '';
     if (dR) dR.textContent = Number(leftVal).toFixed(decimals) + unit;
     updateDiffBadgeSide(uid, 'R', leftVal, field);
+    updateSymWarning(uid);
     refreshAnalyzeBadge();
   }
+}
+
+function formatFieldDisplay(fieldKey, num, decimals, unit) {
+  if (fieldKey === 'brake_bias') {
+    const rear = (100 - num).toFixed(decimals);
+    return `${num.toFixed(decimals)} / ${rear}${unit}`;
+  }
+  return num.toFixed(decimals) + unit;
 }
 
 function updateSlider(uid, rawValue, side) {
@@ -1443,10 +1659,11 @@ function updateSlider(uid, rawValue, side) {
       if (dOther) dOther.textContent = num.toFixed(decimals) + unit;
       updateDiffBadgeSide(uid, otherSide, num, field);
     }
+    updateSymWarning(uid);
   } else {
     currentValues[catKey][subKey][fieldKey] = num;
     const display = document.getElementById('val-' + uid);
-    if (display) display.textContent = num.toFixed(decimals) + unit;
+    if (display) display.textContent = formatFieldDisplay(fieldKey, num, decimals, unit);
     updateDiffBadgeSide(uid, null, num, field);
   }
 

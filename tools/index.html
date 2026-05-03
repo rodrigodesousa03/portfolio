@@ -628,6 +628,21 @@
     }
     .btn-copy:hover { border-color: var(--cyan); color: var(--cyan); }
     .btn-copy.copied { border-color: #00ff88; color: #00ff88; }
+    .btn-toggle-fixed {
+      margin-left: auto;
+      opacity: 0.6;
+    }
+    .btn-toggle-fixed:hover { opacity: 1; }
+
+    /* ---- Label wrap + symmetric warning ---- */
+    .field-label-wrap { display: flex; align-items: baseline; gap: 0.3rem; }
+    .field-sym-warn {
+      display: none;
+      font-size: 0.7rem;
+      color: #ffc03d;
+      cursor: default;
+    }
+    .field-sym-warn.visible { display: inline; }
 
     /* ---- Analyze Button ---- */
     .btn-analyze {
