@@ -31,8 +31,11 @@ function renderFuelCalcPanel(preserve) {
   const durVal  = preserve?.duration   || '';
   const extChk  = preserve?.extra      ? 'checked' : '';
 
+  const backLabel = (toolsI18n[currentLang] || toolsI18n['pt']).ui?.back || '← Voltar';
+
   return `
     <div class="fuel-calc-panel">
+      <button class="btn-back" onclick="history.back()">${backLabel}</button>
       <div class="fuel-calc-header">
         <span class="fuel-calc-icon">⛽</span>
         <div>

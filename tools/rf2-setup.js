@@ -859,6 +859,7 @@ function renderLaunchPanel(toolId, schema) {
 
   return `
     <div class="tool-launch-panel">
+      <button class="btn-back" onclick="history.back()">${getKey(t, 'ui.back')}</button>
       <div class="template-selector-section">
         <div class="template-section-label">${getKey(t, 'ui.selectTemplate')}</div>
         <div class="template-selector-row">
@@ -1216,6 +1217,7 @@ function renderTool(schema) {
 
   document.getElementById('tool-renderer').innerHTML = html;
   initDiffBadges();
+  applyFieldVisibility();
 }
 
 // =============================================

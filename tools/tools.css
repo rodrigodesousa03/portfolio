@@ -1,17 +1,27 @@
 /* ---- Page Header ---- */
 .tools-page-hero {
-  padding-top: 110px;
-  padding-bottom: 0.5rem;
+  padding-top: 90px;
+  padding-bottom: 0;
+  /* override global .section padding */
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+/* kill the large bottom padding the global .section adds */
+section.tools-page-hero.section {
+  padding: 90px 2rem 0;
+}
+.tools-page-hero .section-header {
+  padding-bottom: 0;
 }
 .tools-page-hero .page-title {
   font-family: var(--font-head);
-  font-size: clamp(2rem, 6vw, 3.5rem);
+  font-size: clamp(1.6rem, 5vw, 2.6rem);
   font-weight: 900;
   background: linear-gradient(135deg, var(--cyan), var(--blue));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  margin: 0.5rem 0 0.75rem;
+  margin: 0.25rem 0 0.4rem;
 }
 .tools-page-hero .page-subtitle {
   color: var(--text-dim);
