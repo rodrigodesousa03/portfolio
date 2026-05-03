@@ -17,31 +17,7 @@
   <!-- Grid background -->
   <div class="grid-bg"></div>
 
-  <!-- NAV -->
-  <nav class="navbar" id="navbar">
-    <div class="nav-container">
-      <div class="nav-logo">
-        <span class="logo-bracket">&lt;</span>
-        <span class="logo-text">RdS</span>
-        <span class="logo-bracket">/&gt;</span>
-      </div>
-      <ul class="nav-links">
-        <li><a href="#hero" data-i18n="nav.home">Início</a></li>
-        <li><a href="#sobre" data-i18n="nav.about">Sobre</a></li>
-        <li><a href="#skills" data-i18n="nav.skills">Skills</a></li>
-        <li><a href="#projetos" data-i18n="nav.projects">Projetos Pessoais</a></li>
-        <li><a href="#educacao" data-i18n="nav.education">Formação</a></li>
-        <li><a href="#contato" data-i18n="nav.contact">Contato</a></li>
-        <li><a href="tools/index.html" data-i18n="nav.tools">Ferramentas</a></li>
-      </ul>
-      <button class="lang-toggle" id="lang-toggle" aria-label="Toggle language" title="Switch language">
-        <span id="lang-flag">🇺🇸</span>
-      </button>
-      <button class="hamburger" id="hamburger" aria-label="Menu">
-        <span></span><span></span><span></span>
-      </button>
-    </div>
-  </nav>
+  <div id="header-placeholder"></div>
 
   <!-- HERO -->
   <section class="hero" id="hero">
@@ -375,21 +351,11 @@
     </div>
   </section>
 
-  <!-- FOOTER -->
-  <footer class="footer">
-    <div class="container">
-      <div class="footer-content">
-        <div class="footer-logo">
-          <span class="logo-bracket">&lt;</span>
-          <span class="logo-text">RdS</span>
-          <span class="logo-bracket">/&gt;</span>
-        </div>
-        <p class="footer-copy">© <span id="year"></span> Rodrigo de Sousa</p>
-        <p class="footer-location">📍 Barueri, São Paulo, Brasil</p>
-      </div>
-    </div>
-  </footer>
+  <div id="footer-placeholder"></div>
 
+  <script>window.siteConfig = { page: 'portfolio', basePath: '' };</script>
+  <script src="components/header.js"></script>
+  <script src="components/footer.js"></script>
   <script src="script.js"></script>
 </body>
 </html>

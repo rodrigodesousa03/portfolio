@@ -17,7 +17,9 @@ function launchFuelCalc() {
   const workspace = document.getElementById('tool-workspace');
   workspace.style.display = 'block';
   document.getElementById('tool-renderer').innerHTML = renderFuelCalcPanel();
-  setTimeout(() => workspace.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+  if (!document.body.dataset.tool) {
+    setTimeout(() => workspace.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+  }
 }
 
 function renderFuelCalcPanel(preserve) {
@@ -141,4 +143,8 @@ function escapeHtmlFC(str) {
     .replace(/"/g, '&quot;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;');
+}
+
+if (document.body.dataset.tool === 'fuel-calc') {
+  launchFuelCalc();
 }

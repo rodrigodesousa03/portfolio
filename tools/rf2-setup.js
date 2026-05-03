@@ -826,7 +826,9 @@ function launchTool(toolId) {
   const workspace = document.getElementById('tool-workspace');
   workspace.style.display = 'block';
   document.getElementById('tool-renderer').innerHTML = renderLaunchPanel(toolId, currentSchema);
-  setTimeout(() => workspace.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+  if (!document.body.dataset.tool) {
+    setTimeout(() => workspace.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+  }
 }
 
 function renderLaunchPanel(toolId, schema) {
@@ -1724,3 +1726,7 @@ function hideAnalysis() {
 // INIT
 // =============================================
 applyTranslations();
+
+if (document.body.dataset.tool === 'rf2-setup') {
+  launchTool('rf2-setup');
+}
