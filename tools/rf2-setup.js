@@ -917,6 +917,12 @@ function onTemplateChange(toolId, templateId) {
 // =============================================
 // CREATE NEW
 // =============================================
+function goToLaunchPanel() {
+  if (!currentToolId || !currentSchema) return;
+  isInBuilder = false;
+  document.getElementById('tool-renderer').innerHTML = renderLaunchPanel(currentToolId, currentSchema);
+}
+
 function createNew(toolId) {
   currentSetupName = getKey(t, 'ui.newSetup');
   currentTrackName = '';
@@ -1045,6 +1051,67 @@ function exportTemplate() {
 }
 
 // =============================================
+// SAVE AS TEMPLATE (modal)
+// =============================================
+function showSaveTemplateModal() {
+  document.getElementById('save-template-modal')?.remove();
+  const tpl = getTemplateList(currentToolId).find(tp => tp.id === selectedTemplateId);
+  const currentName = tpl ? tpl.name : (currentSchema?.game || '');
+
+  const modal = document.createElement('div');
+  modal.id = 'save-template-modal';
+  modal.className = 'modal-overlay';
+  modal.innerHTML = `
+    <div class="modal-box" role="dialog" aria-modal="true">
+      <div class="modal-header">
+        <span class="modal-title">${getKey(t, 'ui.saveTemplateTitle')}</span>
+        <button class="modal-close" onclick="closeSaveTemplateModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <label class="modal-label" for="tpl-name-input">${getKey(t, 'ui.saveTemplateLabel')}</label>
+        <input id="tpl-name-input" class="modal-input" type="text"
+          value="${escapeHtml(currentName)}"
+          placeholder="${escapeHtml(currentName)}"
+          onkeydown="if(event.key==='Enter')confirmSaveTemplate(); if(event.key==='Escape')closeSaveTemplateModal();"
+        />
+      </div>
+      <div class="modal-footer">
+        <button class="modal-btn modal-btn-cancel" onclick="closeSaveTemplateModal()">${getKey(t, 'ui.cancel')}</button>
+        <button class="modal-btn modal-btn-confirm" onclick="confirmSaveTemplate()">${getKey(t, 'ui.saveTemplateConfirm')}</button>
+      </div>
+    </div>`;
+  modal.addEventListener('click', e => { if (e.target === modal) closeSaveTemplateModal(); });
+  document.body.appendChild(modal);
+  requestAnimationFrame(() => {
+    modal.classList.add('open');
+    document.getElementById('tpl-name-input')?.select();
+  });
+}
+
+function closeSaveTemplateModal() {
+  const modal = document.getElementById('save-template-modal');
+  if (!modal) return;
+  modal.classList.remove('open');
+  modal.addEventListener('transitionend', () => modal.remove(), { once: true });
+}
+
+function confirmSaveTemplate() {
+  const input = document.getElementById('tpl-name-input');
+  const name = input?.value.trim();
+  if (!name || !currentSchema || !currentToolId) return;
+
+  const userTemplates = getUserTemplates(currentToolId);
+  const newId = 'user-' + Date.now();
+  const newSchema = { game: currentSchema.game, categories: currentSchema.categories };
+  userTemplates.push({ id: newId, name, builtin: false, schema: newSchema });
+  saveUserTemplates(currentToolId, userTemplates);
+
+  selectedTemplateId = newId;
+  closeSaveTemplateModal();
+  document.getElementById('tool-renderer').innerHTML = renderLaunchPanel(currentToolId, newSchema);
+}
+
+// =============================================
 // INIT VALUES
 // =============================================
 function initValues(schema) {
@@ -1085,6 +1152,7 @@ function renderTool(schema) {
 
   let html = `
     <div class="tool-workspace-header">
+      <button class="btn-back" onclick="goToLaunchPanel()">${getKey(t, 'ui.back')}</button>
       <div class="setup-header-inputs">
         <input type="text" class="setup-name-input" id="setup-name"
           value="${escapeHtml(currentSetupName)}"
@@ -1128,6 +1196,7 @@ function renderTool(schema) {
         </button>
         <div class="action-dropdown">
           <button onclick="downloadJSON()">${getKey(t, 'ui.export')}</button>
+          <button onclick="showSaveTemplateModal()">${getKey(t, 'ui.saveTemplate')}</button>
           <button onclick="exportTemplate()">${getKey(t, 'ui.exportTemplate')}</button>
           ${(typeof svmMaps !== 'undefined' && svmMaps[selectedTemplateId]) ? `<button onclick="downloadSvm()">${getKey(t, 'ui.exportSvm')}</button>` : ''}
         </div>

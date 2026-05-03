@@ -71,40 +71,76 @@ function saveSetup() {
 // =============================================
 function showHistory() {
   document.getElementById('history-overlay')?.remove();
-  const entries = loadHistory().filter(e => e.templateId === selectedTemplateId);
-  const hi = getKey(t, 'ui');
+  const allEntries = loadHistory();  // all cars
 
-  let body = '';
-  if (entries.length === 0) {
-    body = `<p class="history-empty">${getKey(t, 'ui.historyEmpty')}</p>`;
-  } else {
-    for (const entry of entries) {
-      const date = new Date(entry.savedAt);
-      const dateStr = date.toLocaleDateString(currentLang === 'pt' ? 'pt-BR' : 'en-US', {
-        day: '2-digit', month: '2-digit', year: 'numeric',
-        hour: '2-digit', minute: '2-digit'
-      });
-      const trackHtml = entry.track
-        ? `<span class="history-track">📍 ${escapeHtml(entry.track)}</span>`
-        : '';
-      body += `
-        <div class="history-entry" id="hist-${entry.id}">
-          <div class="history-entry-info">
-            <span class="history-entry-name">${escapeHtml(entry.name)}</span>
-            ${trackHtml}
-            <span class="history-entry-date">${dateStr}</span>
-          </div>
-          <div class="history-entry-actions">
-            <button class="btn-history-load" onclick="loadFromHistory('${entry.id}')">${getKey(t, 'ui.historyLoad')}</button>
-            <button class="btn-history-delete" onclick="deleteFromHistory('${entry.id}')" title="${getKey(t, 'ui.historyDelete')}">✕</button>
-          </div>
-        </div>`;
-    }
+  // resolve display name for a templateId
+  function tplName(id) {
+    if (!currentToolId) return id;
+    return getTemplateList(currentToolId).find(tp => tp.id === id)?.name || id;
   }
 
-  // Pinned default entry — always shown at the bottom
-  body += `
-    <div class="history-entry history-entry-default">
+  // distinct template IDs present in history
+  const seenIds = [...new Set(allEntries.map(e => e.templateId))];
+  const multiCar = seenIds.length > 1;
+
+  // default filter = current car if it has entries, else 'all'
+  let activeFilter = (selectedTemplateId && allEntries.some(e => e.templateId === selectedTemplateId))
+    ? selectedTemplateId : 'all';
+
+  // --- filter chips (only when multiple cars) ---
+  let filtersHtml = '';
+  if (multiCar) {
+    const chips = [
+      `<button class="history-filter-chip ${activeFilter === 'all' ? 'active' : ''}" data-filter="all" onclick="filterHistory('all')">${getKey(t, 'ui.historyAll')}</button>`,
+      ...seenIds.map(id =>
+        `<button class="history-filter-chip ${activeFilter === id ? 'active' : ''}" data-filter="${escapeHtml(id)}" onclick="filterHistory('${escapeHtml(id)}')">${escapeHtml(tplName(id))}</button>`
+      )
+    ].join('');
+    filtersHtml = `<div class="history-filters" id="history-filters">${chips}</div>`;
+  }
+
+  // --- entries ---
+  let entriesHtml = '';
+  for (const entry of allEntries) {
+    const visible = activeFilter === 'all' || entry.templateId === activeFilter;
+    const canLoad = entry.templateId === selectedTemplateId;
+    const date = new Date(entry.savedAt);
+    const dateStr = date.toLocaleDateString(currentLang === 'pt' ? 'pt-BR' : 'en-US', {
+      day: '2-digit', month: '2-digit', year: 'numeric',
+      hour: '2-digit', minute: '2-digit'
+    });
+    const trackHtml = entry.track
+      ? `<span class="history-track">📍 ${escapeHtml(entry.track)}</span>`
+      : '';
+    const carHtml = multiCar
+      ? `<span class="history-entry-car">${escapeHtml(tplName(entry.templateId))}</span>`
+      : '';
+    const loadBtn = canLoad
+      ? `<button class="btn-history-load" onclick="loadFromHistory('${entry.id}')">${getKey(t, 'ui.historyLoad')}</button>`
+      : `<button class="btn-history-load btn-history-load-disabled" disabled title="${escapeHtml(tplName(entry.templateId))}">${getKey(t, 'ui.historyLoad')}</button>`;
+
+    entriesHtml += `
+      <div class="history-entry${visible ? '' : ' history-hidden'}" id="hist-${entry.id}" data-template="${escapeHtml(entry.templateId)}">
+        <div class="history-entry-info">
+          <span class="history-entry-name">${escapeHtml(entry.name)}</span>
+          ${carHtml}
+          ${trackHtml}
+          <span class="history-entry-date">${dateStr}</span>
+        </div>
+        <div class="history-entry-actions">
+          ${loadBtn}
+          <button class="btn-history-delete" onclick="deleteFromHistory('${entry.id}')" title="${getKey(t, 'ui.historyDelete')}">✕</button>
+        </div>
+      </div>`;
+  }
+
+  // empty state
+  entriesHtml += `<p class="history-empty history-filter-empty"${allEntries.length > 0 ? ' style="display:none"' : ''}>${getKey(t, 'ui.historyEmpty')}</p>`;
+
+  // pinned default entry — visible when filter = current car or 'all'
+  const defaultVisible = !multiCar || activeFilter === 'all' || activeFilter === selectedTemplateId;
+  entriesHtml += `
+    <div class="history-entry history-entry-default${defaultVisible ? '' : ' history-hidden'}" data-template="__default__">
       <div class="history-entry-info">
         <span class="history-entry-name">${getKey(t, 'ui.historyDefaultName')}</span>
         <span class="history-entry-date">${getKey(t, 'ui.historyDefaultDesc')}</span>
@@ -123,11 +159,38 @@ function showHistory() {
         <span class="history-title">${getKey(t, 'ui.historyTitle')}</span>
         <button class="history-close" onclick="hideHistory()">✕</button>
       </div>
-      <div class="history-body">${body}</div>
+      ${filtersHtml}
+      <div class="history-body">${entriesHtml}</div>
     </div>`;
   overlay.addEventListener('click', e => { if (e.target === overlay) hideHistory(); });
   document.body.appendChild(overlay);
   requestAnimationFrame(() => overlay.classList.add('open'));
+}
+
+// =============================================
+// FILTER HISTORY
+// =============================================
+function filterHistory(filterId) {
+  document.querySelectorAll('.history-filter-chip').forEach(c => {
+    c.classList.toggle('active', c.dataset.filter === filterId);
+  });
+  document.querySelectorAll('.history-entry').forEach(el => {
+    const tpl = el.dataset.template;
+    if (filterId === 'all') {
+      el.classList.remove('history-hidden');
+    } else if (tpl === '__default__') {
+      // show default only when filtering by current car
+      el.classList.toggle('history-hidden', filterId !== selectedTemplateId);
+    } else {
+      el.classList.toggle('history-hidden', tpl !== filterId);
+    }
+  });
+  // update empty state
+  const visibleCount = document.querySelectorAll(
+    '.history-entry:not(.history-hidden):not(.history-entry-default)'
+  ).length;
+  const emptyEl = document.querySelector('.history-filter-empty');
+  if (emptyEl) emptyEl.style.display = visibleCount === 0 ? '' : 'none';
 }
 
 function hideHistory() {
