@@ -8,20 +8,33 @@
 }
 /* kill the large bottom padding the global .section adds */
 section.tools-page-hero.section {
-  padding: 90px 2rem 0;
+  padding: 90px 2rem 0.75rem;
 }
 .tools-page-hero .section-header {
   padding-bottom: 0;
 }
 .tools-page-hero .page-title {
   font-family: var(--font-head);
-  font-size: clamp(1.6rem, 5vw, 2.6rem);
+  font-size: clamp(1.2rem, 3.5vw, 1.9rem);
   font-weight: 900;
   background: linear-gradient(135deg, var(--cyan), var(--blue));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  margin: 0.25rem 0 0.4rem;
+  margin: 0.15rem 0 0.25rem;
+}
+
+/* ---- Sticky footer for tool pages ---- */
+body[data-tool] {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+body[data-tool] .scanlines,
+body[data-tool] .grid-bg { flex: none; }
+body[data-tool] #tool-workspace {
+  flex: 1;
+  padding-top: 1.5rem;
 }
 .tools-page-hero .page-subtitle {
   color: var(--text-dim);
