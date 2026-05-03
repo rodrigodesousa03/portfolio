@@ -134,7 +134,20 @@ const toolsI18n = {
       importSvm: 'Importar .svm',
       importSvmDesc: 'Carregar setup do rFactor 2',
       exportSvm: 'Baixar .svm',
-      noSvmMap: 'Este template não possui mapeamento SVM.'
+      noSvmMap: 'Este template não possui mapeamento SVM.',
+      save: '💾 Salvar',
+      saved: 'Salvo!',
+      history: '📂 Histórico',
+      historyTitle: 'Histórico de Setups',
+      historyEmpty: 'Nenhum setup salvo ainda.',
+      historyLoad: 'Carregar',
+      historyDelete: 'Remover',
+      historyDefaultName: '★ Padrão do Schema',
+      historyDefaultDesc: 'Valores originais do carro',
+      exportGroup: 'Exportar',
+      optionsGroup: 'Opções',
+      savedLabel: 'salvo',
+      defaultLabel: 'padrão'
     }
   },
   en: {
@@ -269,7 +282,20 @@ const toolsI18n = {
       importSvm: 'Import .svm',
       importSvmDesc: 'Load an rF2 .svm setup file',
       exportSvm: 'Download .svm',
-      noSvmMap: 'This template has no SVM mapping.'
+      noSvmMap: 'This template has no SVM mapping.',
+      save: '💾 Save',
+      saved: 'Saved!',
+      history: '📂 History',
+      historyTitle: 'Setup History',
+      historyEmpty: 'No setups saved yet.',
+      historyLoad: 'Load',
+      historyDelete: 'Remove',
+      historyDefaultName: '★ Schema Defaults',
+      historyDefaultDesc: 'Original car values',
+      exportGroup: 'Export',
+      optionsGroup: 'Options',
+      savedLabel: 'saved',
+      defaultLabel: 'default'
     }
   }
 };

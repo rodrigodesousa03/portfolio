@@ -309,6 +309,7 @@ function importSvmFile(event, toolId) {
     activeCategory  = null;
     linkState       = {};
     activeTagFilter = new Set();
+    savedValues     = JSON.parse(JSON.stringify(values)); // imported state = new baseline
     isInBuilder     = true;
     renderTool(schema);
   };

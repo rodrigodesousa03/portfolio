@@ -759,8 +759,9 @@ let currentToolId = null;
 let isInBuilder = false;
 let selectedTemplateId = null;
 let linkState = {}; // uid -> boolean (true = linked L+R)
-let showFixedFields = true;
+let showFixedFields = false;
 let activeTagFilter = new Set();
+let savedValues = null; // baseline for diffs (null = use schema defaults)
 
 // Fields where L === R is ideal (symmetric setup warning)
 const symmetricFields = new Set([
@@ -768,6 +769,19 @@ const symmetricFields = new Set([
   'ride_height', 'slow_bump', 'fast_bump', 'slow_rebound', 'fast_rebound',
   'front_wheel_track', 'rear_wheel_track'
 ]);
+
+// =============================================
+// BASELINE HELPER (for diff badges + analysis)
+// =============================================
+/**
+ * Returns the baseline value for a field.
+ * If savedValues is set, uses that; otherwise falls back to schema default.
+ */
+function getBaseline(catKey, subKey, fieldKey, field) {
+  if (!savedValues) return null; // null = use field.default
+  const v = savedValues[catKey]?.[subKey]?.[fieldKey];
+  return v !== undefined ? v : null;
+}
 
 // =============================================
 // LINK STATE HELPERS
@@ -908,6 +922,7 @@ function createNew(toolId) {
   currentTrackName = '';
   linkState = {};
   activeTagFilter = new Set();
+  savedValues = null;  // diffs against schema defaults
   initValues(currentSchema);
   isInBuilder = true;
   renderTool(currentSchema);
@@ -966,6 +981,7 @@ function importSetup(event, toolId) {
       activeCategory = null;
       linkState = {};
       activeTagFilter = new Set();
+      savedValues = JSON.parse(JSON.stringify(currentValues)); // imported state = new baseline
       isInBuilder = true;
       renderTool(schema);
     } catch {
@@ -1103,12 +1119,29 @@ function renderTool(schema) {
       <button class="btn-analyze" id="btn-analyze" onclick="showAnalysis()">
         ${getKey(t, 'ui.analyze')} <span class="analyze-badge" id="analyze-badge" style="display:none">0</span>
       </button>
-      <button class="btn-reset" onclick="resetDefaults()">${getKey(t, 'ui.reset')}</button>
-      <button class="btn-copy" id="btn-copy" onclick="copyJSON()">${getKey(t, 'ui.copy')}</button>
-      <button class="btn btn-small" onclick="downloadJSON()">${getKey(t, 'ui.export')}</button>
-      <button class="btn btn-small" onclick="exportTemplate()">${getKey(t, 'ui.exportTemplate')}</button>
-      ${(typeof svmMaps !== 'undefined' && svmMaps[selectedTemplateId]) ? `<button class="btn btn-small btn-svm" onclick="downloadSvm()">${getKey(t, 'ui.exportSvm')}</button>` : ''}
-      <button class="btn btn-small btn-toggle-fixed" id="btn-toggle-fixed" onclick="toggleFixedFields()">${showFixedFields ? getKey(t, 'ui.hideFixed') : getKey(t, 'ui.showFixed')}</button>
+      <button class="btn-save" id="btn-save" onclick="saveSetup()">${getKey(t, 'ui.save')}</button>
+      <button class="btn-history" onclick="showHistory()">${getKey(t, 'ui.history')}</button>
+
+      <div class="action-group" id="group-export">
+        <button class="action-group-toggle" onclick="toggleActionGroup('group-export')">
+          ${getKey(t, 'ui.exportGroup')} <span class="action-group-arrow">▾</span>
+        </button>
+        <div class="action-dropdown">
+          <button onclick="downloadJSON()">${getKey(t, 'ui.export')}</button>
+          <button onclick="exportTemplate()">${getKey(t, 'ui.exportTemplate')}</button>
+          ${(typeof svmMaps !== 'undefined' && svmMaps[selectedTemplateId]) ? `<button onclick="downloadSvm()">${getKey(t, 'ui.exportSvm')}</button>` : ''}
+        </div>
+      </div>
+
+      <div class="action-group" id="group-opts">
+        <button class="action-group-toggle" onclick="toggleActionGroup('group-opts')">
+          ⚙ ${getKey(t, 'ui.optionsGroup')} <span class="action-group-arrow">▾</span>
+        </button>
+        <div class="action-dropdown">
+          <button onclick="resetDefaults()">${getKey(t, 'ui.reset')}</button>
+          <button id="btn-toggle-fixed" onclick="toggleFixedFields()">${showFixedFields ? getKey(t, 'ui.hideFixed') : getKey(t, 'ui.showFixed')}</button>
+        </div>
+      </div>
     </div>
   `;
 
@@ -1281,11 +1314,24 @@ function updateDiffBadgeSide(uid, side, num, field) {
   const badgeId = side ? `diff-${uid}__${side}` : `diff-${uid}`;
   const badge = document.getElementById(badgeId);
   if (!badge) return;
-  const diff = num - field.default;
+
+  // Resolve baseline: savedValues side-aware, else schema default
+  const [catKey, subKey, fieldKey] = uid.split('__');
+  const baselineObj = getBaseline(catKey, subKey, fieldKey, field);
+  let baselineVal;
+  if (baselineObj !== null && field.sides === 'both' && side) {
+    baselineVal = (typeof baselineObj === 'object') ? (baselineObj[side === 'L' ? 'left' : 'right'] ?? field.default) : Number(baselineObj);
+  } else if (baselineObj !== null && field.sides !== 'both') {
+    baselineVal = Number(baselineObj);
+  } else {
+    baselineVal = field.default;
+  }
+
+  const diff = num - baselineVal;
   const decimals = (field.step.toString().split('.')[1] || '').length;
   const unit = field.unit ? ' ' + field.unit : '';
   if (Math.abs(diff) >= field.step * 0.5) {
-    badge.textContent = (diff > 0 ? '▲' : '▼') + ' ' + Number(field.default).toFixed(decimals) + unit;
+    badge.textContent = (diff > 0 ? '▲' : '▼') + ' ' + Number(baselineVal).toFixed(decimals) + unit;
     badge.className = 'field-diff-badge ' + (diff > 0 ? 'up' : 'down');
     badge.style.display = 'inline';
   } else {
@@ -1357,6 +1403,19 @@ function toggleFixedFields() {
   showFixedFields = !showFixedFields;
   applyFieldVisibility();
 }
+
+function toggleActionGroup(id) {
+  const grp = document.getElementById(id);
+  const isOpen = grp.classList.contains('open');
+  document.querySelectorAll('.action-group.open').forEach(g => g.classList.remove('open'));
+  if (!isOpen) grp.classList.add('open');
+}
+
+document.addEventListener('click', e => {
+  if (!e.target.closest('.action-group')) {
+    document.querySelectorAll('.action-group.open').forEach(g => g.classList.remove('open'));
+  }
+});
 
 // =============================================
 // TAG FILTER
@@ -1596,16 +1655,6 @@ function buildExportJSON() {
   return JSON.stringify(obj, null, 2);
 }
 
-function copyJSON() {
-  navigator.clipboard.writeText(buildExportJSON()).then(() => {
-    const btn = document.getElementById('btn-copy');
-    const orig = btn.textContent;
-    btn.textContent = getKey(t, 'ui.copied');
-    btn.classList.add('copied');
-    setTimeout(() => { btn.textContent = orig; btn.classList.remove('copied'); }, 2000);
-  });
-}
-
 function downloadJSON() {
   const blob = new Blob([buildExportJSON()], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
@@ -1631,19 +1680,25 @@ function getAnalyzableChanges() {
         const current = currentValues[catKey]?.[subKey]?.[fieldKey];
         if (current === undefined) continue;
 
+        const baselineObj = getBaseline(catKey, subKey, fieldKey, field);
         if (field.sides === 'both') {
-          const leftDiff  = current.left  - field.default;
-          const rightDiff = current.right - field.default;
+          const baseL = (baselineObj !== null && typeof baselineObj === 'object') ? (baselineObj.left  ?? field.default) : (baselineObj !== null ? Number(baselineObj) : field.default);
+          const baseR = (baselineObj !== null && typeof baselineObj === 'object') ? (baselineObj.right ?? field.default) : (baselineObj !== null ? Number(baselineObj) : field.default);
+          const leftDiff  = current.left  - baseL;
+          const rightDiff = current.right - baseR;
           const leftChanged  = Math.abs(leftDiff)  >= field.step * 0.5;
           const rightChanged = Math.abs(rightDiff) >= field.step * 0.5;
           if (leftChanged || rightChanged) {
+            const baselineDefault = { left: baseL, right: baseR };
             changes.push({ field, current, diff: leftChanged ? leftDiff : rightDiff,
-              knowledge: fieldKnowledge[knowledgeKey], isBoth: true, leftDiff, rightDiff });
+              knowledge: fieldKnowledge[knowledgeKey], isBoth: true, leftDiff, rightDiff,
+              baselineDefault });
           }
         } else {
-          const diff = current - field.default;
+          const baselineVal = baselineObj !== null ? Number(baselineObj) : field.default;
+          const diff = current - baselineVal;
           if (Math.abs(diff) >= field.step * 0.5) {
-            changes.push({ field, current, diff, knowledge: fieldKnowledge[knowledgeKey] });
+            changes.push({ field: { ...field, _baseline: baselineVal }, current, diff, knowledge: fieldKnowledge[knowledgeKey] });
           }
         }
       }
@@ -1723,7 +1778,7 @@ function showAnalysis() {
           <div class="analysis-values">
             ${valHtml}
             <span class="analysis-sep">→</span>
-            <span class="analysis-default">${Number(field.default).toFixed(decimals)}${unit} ${getKey(t, 'ui.defaultLabel')}</span>
+            <span class="analysis-default">${isBoth ? Number(baselineDefault.left).toFixed(decimals) : Number(field._baseline ?? field.default).toFixed(decimals)}${unit} <em>${savedValues ? getKey(t, 'ui.savedLabel') : getKey(t, 'ui.defaultLabel')}</em></span>
           </div>
           <p class="analysis-desc">${knowledge.description}</p>
           <ul class="analysis-effects">${effectsHtml}</ul>
