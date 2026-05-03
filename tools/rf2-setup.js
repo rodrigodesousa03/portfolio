@@ -1314,6 +1314,28 @@ function applyFieldVisibility() {
     block.style.display = anyVisible ? '' : 'none';
   });
 
+  // Oculta tabs de categorias sem conteúdo visível
+  const allTabs   = [...document.querySelectorAll('.cat-tab')];
+  const allPanels = [...document.querySelectorAll('.cat-panel')];
+  allTabs.forEach((tab, i) => {
+    const panel = allPanels[i];
+    if (!panel) return;
+    const subcats = [...panel.querySelectorAll('.subcat-block')];
+    const hasVisible = subcats.length
+      ? subcats.some(b => b.style.display !== 'none')
+      : [...panel.querySelectorAll('.field-row[id^="row-"]')].some(f => f.style.display !== 'none');
+    tab.style.display = hasVisible ? '' : 'none';
+  });
+
+  // Se o tab ativo ficou oculto, muda para o primeiro visível
+  const activeTab = document.querySelector('.cat-tab.active');
+  if (activeTab && activeTab.style.display === 'none') {
+    const firstIdx = allTabs.findIndex(t => t.style.display !== 'none');
+    if (firstIdx !== -1 && allPanels[firstIdx]) {
+      switchCategory(allPanels[firstIdx].id.replace('panel-', ''));
+    }
+  }
+
   const btn = document.getElementById('btn-toggle-fixed');
   if (btn) btn.textContent = showFixedFields ? getKey(t, 'ui.hideFixed') : getKey(t, 'ui.showFixed');
 }
