@@ -46,7 +46,14 @@ const toolsI18n = {
       cannotFinish: '⚠ Precisa ir ao box',
       tightWarning: '⚡ Dá no limite',
       raceErrorTime: 'Preencha todos os campos. Formato do tempo: m:ss',
-      raceErrorLaps: 'Preencha todos os campos corretamente.'
+      raceErrorLaps: 'Preencha todos os campos corretamente.',
+      targetConsumption: 'Consumo Alvo',
+      savingsPerLap: 'Economia/Volta',
+      reductionPct: 'Redução',
+      lncCalm: '✓ L&C tranquilo',
+      lncModerate: '⚡ L&C moderado',
+      lncAggressive: '⚠ L&C agressivo',
+      lncImpossible: '✗ L&C impossível'
     },
     categories: {
       powertrain:         'Trem de Força',
@@ -219,7 +226,14 @@ const toolsI18n = {
       cannotFinish: '⚠ Needs to pit',
       tightWarning: '⚡ It\'s tight',
       raceErrorTime: 'Fill all fields. Time format: m:ss',
-      raceErrorLaps: 'Fill all fields correctly.'
+      raceErrorLaps: 'Fill all fields correctly.',
+      targetConsumption: 'Target Consumption',
+      savingsPerLap: 'Savings/Lap',
+      reductionPct: 'Reduction',
+      lncCalm: '✓ Easy L&C',
+      lncModerate: '⚡ Moderate L&C',
+      lncAggressive: '⚠ Aggressive L&C',
+      lncImpossible: '✗ Impossible L&C'
     },
     categories: {
       powertrain:         'Powertrain',

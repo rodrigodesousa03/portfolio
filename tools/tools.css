@@ -904,6 +904,27 @@ select.cfg-input { background: var(--dark); cursor: pointer; }
   line-height: 1;
 }
 
+/* ---- Sub-grid L&C (economia e redução) ---- */
+.fuel-result-grid--lnc {
+  grid-template-columns: 1fr 1fr;
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border);
+}
+
+/* ---- Label opcional ---- */
+.fuel-optional {
+  font-size: 0.62rem;
+  opacity: 0.55;
+  font-family: var(--font-mono);
+  font-weight: 400;
+}
+
+/* ---- Responsive: 3 abas em telas pequenas ---- */
+@media (max-width: 400px) {
+  .fuel-tab { font-size: 0.65rem; padding: 0.5rem 0.3rem; }
+}
+
 /* ---- Veredito (pode terminar / box) ---- */
 .fuel-verdict {
   margin-top: 1rem;
@@ -929,6 +950,11 @@ select.cfg-input { background: var(--dark); cursor: pointer; }
   color: #ffc03d;
   background: rgba(255, 192, 61, 0.08);
   border: 1px solid rgba(255, 192, 61, 0.35);
+}
+.fuel-verdict-warning {
+  color: #ff8c42;
+  background: rgba(255, 140, 66, 0.08);
+  border: 1px solid rgba(255, 140, 66, 0.35);
 }
 
 .fuel-result {

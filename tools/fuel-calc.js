@@ -57,9 +57,9 @@ function renderFuelCalcPanel(preserve) {
   const durDisp    = fcDurationMode === 'time' ? '' : 'display:none';
   const lapCntDisp = fcDurationMode === 'laps' ? '' : 'display:none';
 
-  const raceLtDisp = fcRaceMode === 'time' ? '' : 'display:none';
-  const raceRtDisp = fcRaceMode === 'time' ? '' : 'display:none';
-  const raceRlDisp = fcRaceMode === 'laps' ? '' : 'display:none';
+  const raceLtDisp  = fcRaceMode === 'time' ? '' : 'display:none';
+  const raceRtDisp  = fcRaceMode === 'time' ? '' : 'display:none';
+  const raceRlDisp  = fcRaceMode === 'laps' ? '' : 'display:none';
 
   return `
     <div class="fuel-calc-panel">
@@ -93,8 +93,8 @@ function renderFuelCalcPanel(preserve) {
           <div class="fuel-field">
             <label class="fuel-label">${fc.fuelPerLap}</label>
             <div class="fuel-input-hint">L / ${fc.lap}</div>
-            <input type="number" id="fc-consumption" class="fuel-input" placeholder="2.8"
-              min="0" step="0.1" value="${escapeHtmlFC(consVal)}" />
+          <input type="text" inputmode="decimal" id="fc-consumption" class="fuel-input" placeholder="2,8"
+            value="${escapeHtmlFC(consVal)}" />
           </div>
           <div class="fuel-field" id="fc-duration-field" style="${durDisp}">
             <label class="fuel-label">${fc.raceDuration}</label>
@@ -129,14 +129,14 @@ function renderFuelCalcPanel(preserve) {
           <div class="fuel-field">
             <label class="fuel-label">${fc.currentFuel}</label>
             <div class="fuel-input-hint">L</div>
-            <input type="number" id="fc-race-fuel" class="fuel-input" placeholder="15.0"
-              min="0" step="0.1" value="${escapeHtmlFC(raceFuelVal)}" />
+            <input type="text" inputmode="decimal" id="fc-race-fuel" class="fuel-input" placeholder="15,0"
+              value="${escapeHtmlFC(raceFuelVal)}" />
           </div>
           <div class="fuel-field">
             <label class="fuel-label">${fc.fuelPerLap}</label>
             <div class="fuel-input-hint">L / ${fc.lap}</div>
-            <input type="number" id="fc-race-consumption" class="fuel-input" placeholder="2.8"
-              min="0" step="0.1" value="${escapeHtmlFC(raceConsVal)}" />
+            <input type="text" inputmode="decimal" id="fc-race-consumption" class="fuel-input" placeholder="2,8"
+              value="${escapeHtmlFC(raceConsVal)}" />
           </div>
           <div class="fuel-field" id="fc-race-laptime-field" style="${raceLtDisp}">
             <label class="fuel-label">${fc.lapTime}</label>
@@ -205,7 +205,7 @@ function switchRaceMode(mode) {
 // ---- Cálculo pré-corrida ----
 
 function calcFuel() {
-  const fuelPerLap = parseFloat(document.getElementById('fc-consumption').value);
+  const fuelPerLap = fcParse(document.getElementById('fc-consumption').value);
   const extraLap   = document.getElementById('fc-extra').checked;
   const fc         = (toolsI18n[currentLang] || toolsI18n['pt']).fuelCalc;
   const resultEl   = document.getElementById('fuel-result');
@@ -215,7 +215,7 @@ function calcFuel() {
 
   if (fcDurationMode === 'time') {
     const lapTimeStr = document.getElementById('fc-laptime').value.trim();
-    const raceMins   = parseFloat(document.getElementById('fc-duration').value);
+    const raceMins   = fcParse(document.getElementById('fc-duration').value);
     const lapParts   = lapTimeStr.match(/^(\d+):([0-5]\d)$/);
     if (!lapParts || isNaN(fuelPerLap) || fuelPerLap <= 0 || isNaN(raceMins) || raceMins <= 0) {
       resultEl.style.display = 'block';
@@ -225,7 +225,7 @@ function calcFuel() {
     lapTimeSec = parseInt(lapParts[1]) * 60 + parseInt(lapParts[2]);
     laps = Math.ceil((raceMins * 60) / lapTimeSec);
   } else {
-    const lapCount   = parseFloat(document.getElementById('fc-lapcount').value);
+    const lapCount   = fcParse(document.getElementById('fc-lapcount').value);
     const lapTimeStr = document.getElementById('fc-laptime').value.trim();
     if (isNaN(lapCount) || lapCount <= 0 || isNaN(fuelPerLap) || fuelPerLap <= 0) {
       resultEl.style.display = 'block';
@@ -250,7 +250,7 @@ function calcFuel() {
         <div class="fuel-result-label">${fc.laps}</div>
       </div>
       <div class="fuel-result-item fuel-result-main">
-        <div class="fuel-result-value">${totalFuel.toFixed(2)}&thinsp;L</div>
+        <div class="fuel-result-value">${fcFmt(totalFuel, 2)}&thinsp;L</div>
         <div class="fuel-result-label">${fc.totalFuel}</div>
       </div>
       <div class="fuel-result-item">
@@ -265,8 +265,8 @@ function calcFuel() {
 // ---- Cálculo durante a corrida ----
 
 function calcRaceFuel() {
-  const currentFuel = parseFloat(document.getElementById('fc-race-fuel').value);
-  const fuelPerLap  = parseFloat(document.getElementById('fc-race-consumption').value);
+  const currentFuel = fcParse(document.getElementById('fc-race-fuel').value);
+  const fuelPerLap  = fcParse(document.getElementById('fc-race-consumption').value);
   const fc          = (toolsI18n[currentLang] || toolsI18n['pt']).fuelCalc;
   const resultEl    = document.getElementById('race-result');
 
@@ -311,6 +311,35 @@ function calcRaceFuel() {
   const verdictClass = isTight ? 'fuel-verdict-tight' : (canFinish ? 'fuel-verdict-ok' : 'fuel-verdict-nok');
   const verdict      = isTight ? fc.tightWarning : (canFinish ? fc.canFinish : fc.cannotFinish);
 
+  // L&C: calcular quando há déficit
+  let lncHtml = '';
+  if (!canFinish) {
+    const targetCons   = currentFuel / remainingLaps;
+    const savingsLap   = fuelPerLap - targetCons;
+    const reductionPct = (savingsLap / fuelPerLap) * 100;
+    let lncClass, lncText;
+    if (reductionPct <= 5)       { lncClass = 'fuel-verdict-ok';      lncText = fc.lncCalm; }
+    else if (reductionPct <= 10) { lncClass = 'fuel-verdict-tight';   lncText = fc.lncModerate; }
+    else if (reductionPct <= 20) { lncClass = 'fuel-verdict-warning'; lncText = fc.lncAggressive; }
+    else                         { lncClass = 'fuel-verdict-nok';     lncText = fc.lncImpossible; }
+    lncHtml = `
+      <div class="fuel-result-grid fuel-result-grid--lnc">
+        <div class="fuel-result-item">
+          <div class="fuel-result-value" style="font-size:1.4rem">${fcFmt(targetCons, 3)}&thinsp;L</div>
+          <div class="fuel-result-label">${fc.targetConsumption}</div>
+        </div>
+        <div class="fuel-result-item">
+          <div class="fuel-result-value" style="font-size:1.4rem">${fcFmt(savingsLap, 3)}&thinsp;L</div>
+          <div class="fuel-result-label">${fc.savingsPerLap}</div>
+        </div>
+        <div class="fuel-result-item">
+          <div class="fuel-result-value" style="font-size:1.4rem">${fcFmt(reductionPct, 1)}%</div>
+          <div class="fuel-result-label">${fc.reductionPct}</div>
+        </div>
+      </div>
+      <div class="fuel-verdict ${lncClass}">${lncText}</div>`;
+  }
+
   resultEl.style.display = 'block';
   resultEl.innerHTML = `
     <div class="fuel-result-grid">
@@ -319,7 +348,7 @@ function calcRaceFuel() {
         <div class="fuel-result-label">${fc.laps}</div>
       </div>
       <div class="fuel-result-item">
-        <div class="fuel-result-value fuel-result-value--big" style="color:${surplusColor}">${surplusAbs.toFixed(2)}&thinsp;L</div>
+        <div class="fuel-result-value fuel-result-value--big" style="color:${surplusColor}">${fcFmt(surplusAbs, 2)}&thinsp;L</div>
         <div class="fuel-result-label">${surplusLabel}</div>
       </div>
       <div class="fuel-result-item">
@@ -328,7 +357,8 @@ function calcRaceFuel() {
       </div>
     </div>
     ${raceExtra ? `<div class="fuel-result-note">✓ ${fc.extraLapNote}</div>` : ''}
-    <div class="fuel-verdict ${verdictClass}">${verdict}</div>
+    ${canFinish ? `<div class="fuel-verdict ${verdictClass}">${verdict}</div>` : ''}
+    ${lncHtml}
   `;
 }
 
@@ -357,6 +387,14 @@ function reRenderFuelCalc() {
 }
 
 // ---- Helpers ----
+function fcParse(val) {
+  return parseFloat(String(val).replace(',', '.').replace(/[^0-9.]/g, ''));
+}
+
+function fcFmt(num, dec) {
+  return num.toFixed(dec).replace('.', ',');
+}
+
 function fuelCalcFormatTime(totalSec) {
   const m = Math.floor(totalSec / 60);
   const s = totalSec % 60;
