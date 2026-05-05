@@ -1697,7 +1697,6 @@ select.cfg-input { background: var(--dark); cursor: pointer; }
 .diagnosis-card-title {
   font-family: var(--font-mono);
   font-size: 0.82rem;
-  color: var(--text-primary);
   font-weight: 600;
   line-height: 1.2;
   color: var(--text);
