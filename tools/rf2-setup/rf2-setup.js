@@ -762,6 +762,8 @@ let linkState = {}; // uid -> boolean (true = linked L+R)
 let showFixedFields = false;
 let activeTagFilter = new Set();
 let savedValues = null; // baseline for diffs (null = use schema defaults)
+let currentCircuitInfo = { sentido: 'anti-horario', perfil: 'misto', condicao: 'seco' };
+let currentCircuitId = '';
 
 // Fields where L === R is ideal (symmetric setup warning)
 const symmetricFields = new Set([
@@ -927,6 +929,8 @@ function goToLaunchPanel() {
 function createNew(toolId) {
   currentSetupName = getKey(t, 'ui.newSetup');
   currentTrackName = '';
+  currentCircuitInfo = { sentido: 'anti-horario', perfil: 'misto', condicao: 'seco' };
+  currentCircuitId = '';
   linkState = {};
   activeTagFilter = new Set();
   savedValues = null;  // diffs against schema defaults
@@ -984,6 +988,8 @@ function importSetup(event, toolId) {
 
       currentSetupName = imported.setup_name || getKey(t, 'ui.importedSetup');
       currentTrackName = imported.track || '';
+      currentCircuitInfo = imported.circuitInfo || { sentido: 'anti-horario', perfil: 'misto', condicao: 'seco' };
+      currentCircuitId = imported.circuitId || '';
       currentSchema = schema;
       activeCategory = null;
       linkState = {};
@@ -1164,6 +1170,34 @@ function renderTool(schema) {
           placeholder="${escapeHtml(getKey(t, 'ui.trackPlaceholder'))}"
           oninput="currentTrackName = this.value"/>
       </div>
+      <div class="circuit-select-row">
+        <label class="circuit-info-label">Circuito:
+          <select class="circuit-select" id="circuit-selector" onchange="selectCircuit(this.value)">
+            ${typeof buildCircuitOptions === 'function' ? buildCircuitOptions(currentCircuitId) : '<option value="">— selecionar circuito —</option>'}
+          </select>
+        </label>
+      </div>
+      <div class="circuit-info-row">
+        <label class="circuit-info-label">Sentido:
+          <select class="circuit-info-select" id="ci-sentido" onchange="currentCircuitInfo.sentido = this.value">
+            <option value="anti-horario" ${currentCircuitInfo.sentido === 'anti-horario' ? 'selected' : ''}>Anti-Horário</option>
+            <option value="horario" ${currentCircuitInfo.sentido === 'horario' ? 'selected' : ''}>Horário</option>
+          </select>
+        </label>
+        <label class="circuit-info-label">Perfil:
+          <select class="circuit-info-select" id="ci-perfil" onchange="currentCircuitInfo.perfil = this.value">
+            <option value="misto" ${currentCircuitInfo.perfil === 'misto' ? 'selected' : ''}>Misto</option>
+            <option value="alta-velocidade" ${currentCircuitInfo.perfil === 'alta-velocidade' ? 'selected' : ''}>Alta Velocidade</option>
+            <option value="tecnico" ${currentCircuitInfo.perfil === 'tecnico' ? 'selected' : ''}>Técnico</option>
+          </select>
+        </label>
+        <label class="circuit-info-label">Condição:
+          <select class="circuit-info-select" id="ci-condicao" onchange="currentCircuitInfo.condicao = this.value">
+            <option value="seco" ${currentCircuitInfo.condicao === 'seco' ? 'selected' : ''}>Seco</option>
+            <option value="molhado" ${currentCircuitInfo.condicao === 'molhado' ? 'selected' : ''}>Molhado</option>
+          </select>
+        </label>
+      </div>
     </div>
     <div class="tag-filter-bar" id="tag-filter-bar">
       <span class="tag-filter-label">Filtrar:</span>
@@ -1185,6 +1219,7 @@ function renderTool(schema) {
   html += `</div>`;
   html += `
     <div class="setup-action-bar">
+      <button class="btn-diagnosis" onclick="showDiagnosis()">Diagnóstico</button>
       <button class="btn-analyze" id="btn-analyze" onclick="showAnalysis()">
         ${getKey(t, 'ui.analyze')} <span class="analyze-badge" id="analyze-badge" style="display:none">0</span>
       </button>
@@ -1723,6 +1758,8 @@ function resetDefaults() {
 function buildExportJSON() {
   const obj = { setup_name: currentSetupName, game: currentSchema.game, setup: currentValues };
   if (currentTrackName) obj.track = currentTrackName;
+  obj.circuitInfo = currentCircuitInfo;
+  if (currentCircuitId) obj.circuitId = currentCircuitId;
   return JSON.stringify(obj, null, 2);
 }
 
@@ -1879,6 +1916,63 @@ function hideAnalysis() {
   if (!overlay) return;
   overlay.classList.remove('open');
   overlay.addEventListener('transitionend', () => overlay.remove(), { once: true });
+}
+
+// =============================================
+// CIRCUIT SELECTOR
+// =============================================
+function selectCircuit(id) {
+  currentCircuitId = id;
+  if (!id || typeof CIRCUITS === 'undefined') return;
+  const circuit = CIRCUITS.find(c => c.id === id);
+  if (!circuit) return;
+
+  currentTrackName = circuit.shortName;
+  currentCircuitInfo.sentido = circuit.sentido;
+  currentCircuitInfo.perfil = circuit.perfil;
+
+  const trackInput = document.getElementById('setup-track');
+  if (trackInput) trackInput.value = circuit.shortName;
+  const sentidoEl = document.getElementById('ci-sentido');
+  if (sentidoEl) sentidoEl.value = circuit.sentido;
+  const perfilEl = document.getElementById('ci-perfil');
+  if (perfilEl) perfilEl.value = circuit.perfil;
+}
+
+// =============================================
+// DIAGNOSIS PANEL
+// =============================================
+function showDiagnosis() {
+  document.getElementById('diagnosis-overlay')?.remove();
+  if (typeof buildDiagnosisPanel !== 'function') return;
+  const overlay = document.createElement('div');
+  overlay.id = 'diagnosis-overlay';
+  overlay.className = 'analysis-overlay';
+  overlay.innerHTML = buildDiagnosisPanel(currentCircuitInfo);
+  overlay.addEventListener('click', e => { if (e.target === overlay) hideDiagnosis(); });
+  document.body.appendChild(overlay);
+  requestAnimationFrame(() => overlay.classList.add('open'));
+}
+
+function hideDiagnosis() {
+  const overlay = document.getElementById('diagnosis-overlay');
+  if (!overlay) return;
+  overlay.classList.remove('open');
+  overlay.addEventListener('transitionend', () => overlay.remove(), { once: true });
+}
+
+function navigateToField(catKey, subKey, fieldKey) {
+  hideDiagnosis();
+  switchCategory(catKey);
+  const uid = `${catKey}__${subKey}__${fieldKey}`;
+  setTimeout(() => {
+    const el = document.getElementById('row-' + uid);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      el.classList.add('scenario-highlight');
+      setTimeout(() => el.classList.remove('scenario-highlight'), 3000);
+    }
+  }, 150);
 }
 
 // =============================================
