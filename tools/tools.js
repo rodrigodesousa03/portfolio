@@ -13,7 +13,9 @@ const toolsI18n = {
       },
       fuelCalc: {
         name: 'Calculadora de Combustível',
-        desc: 'Calcule o combustível necessário para a corrida'
+        desc: 'Calcule o combustível necessário para a corrida',
+        tag1: 'Corrida',
+        tag2: 'Estratégia'
       }
     },
     fuelCalc: {
@@ -193,7 +195,9 @@ const toolsI18n = {
       },
       fuelCalc: {
         name: 'Fuel Calculator',
-        desc: 'Calculate the fuel needed for the race'
+        desc: 'Calculate the fuel needed for the race',
+        tag1: 'Race',
+        tag2: 'Strategy'
       }
     },
     fuelCalc: {

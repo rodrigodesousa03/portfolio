@@ -96,24 +96,24 @@ function renderFuelCalcPanel(preserve) {
           <input type="text" inputmode="decimal" id="fc-consumption" class="fuel-input" placeholder="2,8"
             value="${escapeHtmlFC(consVal)}" />
           </div>
-          <div class="fuel-field" id="fc-duration-field" style="${durDisp}">
+          <div class="fuel-field fuel-field--span" id="fc-duration-field" style="${durDisp}">
             <label class="fuel-label">${fc.raceDuration}</label>
             <div class="fuel-input-hint">min</div>
             <input type="number" id="fc-duration" class="fuel-input" placeholder="60"
               min="1" step="1" value="${escapeHtmlFC(durVal)}" />
           </div>
-          <div class="fuel-field" id="fc-lapcount-field" style="${lapCntDisp}">
+          <div class="fuel-field fuel-field--span" id="fc-lapcount-field" style="${lapCntDisp}">
             <label class="fuel-label">${fc.lapCount}</label>
             <div class="fuel-input-hint">${fc.laps}</div>
             <input type="number" id="fc-lapcount" class="fuel-input" placeholder="30"
               min="1" step="1" value="${escapeHtmlFC(lapCountVal)}" />
           </div>
-          <div class="fuel-field fuel-field-check">
-            <label class="fuel-check-label">
-              <input type="checkbox" id="fc-extra" ${extChk} />
-              <span class="fuel-check-text">${fc.extraLap}</span>
-            </label>
-          </div>
+        </div>
+        <div class="fuel-check-row">
+          <label class="fuel-check-label">
+            <input type="checkbox" id="fc-extra" ${extChk} />
+            <span class="fuel-check-text">${fc.extraLap}</span>
+          </label>
         </div>
         <button class="fuel-calc-btn" onclick="calcFuel()">${fc.calculate}</button>
         <div class="fuel-result" id="fuel-result" style="display:none"></div>
@@ -150,18 +150,18 @@ function renderFuelCalcPanel(preserve) {
             <input type="number" id="fc-race-remaining-time" class="fuel-input" placeholder="20"
               min="0" step="1" value="${escapeHtmlFC(raceRemTimeVal)}" />
           </div>
-          <div class="fuel-field" id="fc-race-remlaps-field" style="${raceRlDisp}">
+          <div class="fuel-field fuel-field--span" id="fc-race-remlaps-field" style="${raceRlDisp}">
             <label class="fuel-label">${fc.remainingLaps}</label>
             <div class="fuel-input-hint">${fc.laps}</div>
             <input type="number" id="fc-race-remaining-laps" class="fuel-input" placeholder="8"
               min="1" step="1" value="${escapeHtmlFC(raceRemLapsVal)}" />
           </div>
-          <div class="fuel-field fuel-field-check">
-            <label class="fuel-check-label">
-              <input type="checkbox" id="fc-race-extra" ${raceExtraChk} />
-              <span class="fuel-check-text">${fc.extraLap}</span>
-            </label>
-          </div>
+        </div>
+        <div class="fuel-check-row">
+          <label class="fuel-check-label">
+            <input type="checkbox" id="fc-race-extra" ${raceExtraChk} />
+            <span class="fuel-check-text">${fc.extraLap}</span>
+          </label>
         </div>
         <button class="fuel-calc-btn" onclick="calcRaceFuel()">${fc.calculate}</button>
         <div class="fuel-result" id="race-result" style="display:none"></div>

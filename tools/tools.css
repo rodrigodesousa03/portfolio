@@ -812,10 +812,19 @@ select.cfg-input { background: var(--dark); cursor: pointer; }
   transition: border-color 0.2s;
 }
 .fuel-input:focus { outline: none; border-color: var(--cyan); }
+.fuel-field--span {
+  grid-column: 1 / -1;
+}
 .fuel-field-check {
   display: flex;
   align-items: flex-end;
   padding-bottom: 0.15rem;
+}
+.fuel-check-row {
+  display: flex;
+  align-items: center;
+  padding: 0.35rem 0.1rem;
+  margin-bottom: 0.75rem;
 }
 .fuel-check-label {
   display: flex;
@@ -904,9 +913,9 @@ select.cfg-input { background: var(--dark); cursor: pointer; }
   line-height: 1;
 }
 
-/* ---- Sub-grid L&C (economia e redução) ---- */
+/* ---- Sub-grid L&C (consumo alvo, economia, redução) ---- */
 .fuel-result-grid--lnc {
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(3, 1fr);
   margin-top: 0.75rem;
   padding-top: 0.75rem;
   border-top: 1px solid var(--border);
