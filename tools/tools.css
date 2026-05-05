@@ -1700,6 +1700,7 @@ select.cfg-input { background: var(--dark); cursor: pointer; }
   color: var(--text-primary);
   font-weight: 600;
   line-height: 1.2;
+  color: var(--text);
 }
 .diagnosis-card-desc {
   font-size: 0.72rem;
