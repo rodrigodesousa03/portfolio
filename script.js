@@ -5,7 +5,7 @@ const i18nData = {
   pt: {
     nav: {
       home: "Início", about: "Sobre", skills: "Skills",
-      projects: "Projetos Pessoais", education: "Formação", contact: "Contato", tools: "Ferramentas"
+      projects: "Projetos Pessoais", education: "Formação", contact: "Contato", driver: "Piloto"
     },
     hero: {
       descHtml: 'Engenheiro de Software com <strong>+10 anos</strong> de experiência em desenvolvimento backend.<br/>Especializado em <span class="highlight">Go</span>, <span class="highlight">Java</span>, <span class="highlight">Microserviços</span> e <span class="highlight">APIs de alto desempenho</span>.',
@@ -59,7 +59,7 @@ const i18nData = {
   en: {
     nav: {
       home: "Home", about: "About", skills: "Skills",
-      projects: "Personal Projects", education: "Education", contact: "Contact", tools: "Tools"
+      projects: "Personal Projects", education: "Education", contact: "Contact", driver: "Driver"
     },
     hero: {
       descHtml: 'Software Engineer with <strong>10+ years</strong> of experience in backend development.<br/>Specialized in <span class="highlight">Go</span>, <span class="highlight">Java</span>, <span class="highlight">Microservices</span> and <span class="highlight">high-performance APIs</span>.',
