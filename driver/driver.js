@@ -15,6 +15,7 @@ const driverI18n = {
     },
     hero: {
       tag: 'PERFIL DO PILOTO',
+      since: 'Desde',
       titlesLabel: 'Títulos de Piloto',
       constructorsLabel: 'Títulos de Construtores'
     },
@@ -55,7 +56,27 @@ const driverI18n = {
       winStreak: 'Sequência de Vitórias',
       circuitsWon: 'Circuitos Vencidos',
       leaguesWithTitle: 'Ligas com Título',
-      noHighlights: 'Sem destaques disponíveis'
+      noHighlights: 'Sem destaques disponíveis',
+      teamStartTitle: 'Equipe & Largada',
+      avgStart: 'Largada Média',
+      avgGain: 'Ganho Médio de Posições',
+      bestStart: 'Melhor Largada',
+      biggestGain: 'Maior Ganho de Posições',
+      simuladorTitle: 'Por Simulador'
+    },
+    popover: {
+      firstAchieved: 'Primeira vez',
+      streakRaces: 'Corridas da sequência',
+      of: 'de'
+    },
+    filter: {
+      year: 'Ano', league: 'Liga', simulator: 'Simulador',
+      all: 'Todos', allFem: 'Todas',
+      clear: '✕ Limpar filtros'
+    },
+    timeline: {
+      tag: '// 02',
+      title: 'Linha do Tempo'
     },
     milestones: {
       firstRace: 'Primeira Corrida',
@@ -87,6 +108,7 @@ const driverI18n = {
     },
     hero: {
       tag: 'DRIVER PROFILE',
+      since: 'Since',
       titlesLabel: 'Driver Titles',
       constructorsLabel: 'Constructors Titles'
     },
@@ -127,7 +149,27 @@ const driverI18n = {
       winStreak: 'Win Streak',
       circuitsWon: 'Circuits Won',
       leaguesWithTitle: 'Leagues with Title',
-      noHighlights: 'No highlights available'
+      noHighlights: 'No highlights available',
+      teamStartTitle: 'Team & Starting Grid',
+      avgStart: 'Average Start',
+      avgGain: 'Average Positions Gained',
+      bestStart: 'Best Start',
+      biggestGain: 'Biggest Positions Gain',
+      simuladorTitle: 'By Simulator'
+    },
+    popover: {
+      firstAchieved: 'First achieved',
+      streakRaces: 'Streak races',
+      of: 'of'
+    },
+    filter: {
+      year: 'Year', league: 'League', simulator: 'Simulator',
+      all: 'All', allFem: 'All',
+      clear: '✕ Clear filters'
+    },
+    timeline: {
+      tag: '// 02',
+      title: 'Timeline'
     },
     milestones: {
       firstRace: 'First Race',
@@ -186,6 +228,12 @@ const STAT_ICONS = {
 let etapas = [];
 let top3Circuitos = [];
 let dataLoaded = false;
+let careerStartYear = null;
+
+let allAnos = [];
+let allLigas = [];
+let allSimuladores = [];
+let filters = { ano: '', liga: '', simulador: '' };
 
 let statsBar = null;
 let advancedStats = null;
@@ -193,6 +241,9 @@ let recordes = null;
 let byAno = [];
 let byLiga = [];
 let byCircuito = [];
+let byEquipe = [];
+let bySimulador = [];
+let startStats = null;
 let milestones = [];
 
 let yearlyChartInstance = null;
@@ -212,6 +263,14 @@ function esc(str) {
 
 function pl(n, singular, plural) { return n === 1 ? singular : plural; }
 
+function getFilteredEtapas() {
+  return etapas.filter(r =>
+    (!filters.ano || r['Ano'] === filters.ano) &&
+    (!filters.liga || r['Liga'] === filters.liga) &&
+    (!filters.simulador || DriverData.normalizeSimulador(r['Simulador']) === filters.simulador)
+  );
+}
+
 function posClassFor(row) {
   const pos = DriverData.formatPosition(row);
   if (pos === 'P1') return 'p1';
@@ -219,6 +278,45 @@ function posClassFor(row) {
   if (pos === 'P3') return 'p3';
   if (pos === 'DNF' || pos === 'DNS' || pos === 'DSQ') return 'dnf';
   return '';
+}
+
+// ---------------------------------------------
+// POPOVERS — explicação/detalhe ao passar o mouse (ou tocar, no mobile)
+// ---------------------------------------------
+function popoverHtml(title, bodyHtml) {
+  return `<div class="driver-popover" role="tooltip">
+    <div class="driver-popover-title">${esc(title)}</div>
+    ${bodyHtml}
+  </div>`;
+}
+
+function popoverRaceListHtml(rows) {
+  if (!rows || !rows.length) return `<p class="driver-popover-empty">-</p>`;
+  return `<ul class="driver-popover-list">
+    ${rows.map(r => `<li>
+      <span class="driver-popover-pos ${posClassFor(r)}">${esc(DriverData.formatPosition(r))}</span>
+      <span class="driver-popover-item-main">${esc(r['Pista'])}</span>
+      <span class="driver-popover-item-sub">${esc(r['Data'])}</span>
+    </li>`).join('')}
+  </ul>`;
+}
+
+function popoverTextListHtml(items) {
+  if (!items || !items.length) return `<p class="driver-popover-empty">-</p>`;
+  return `<ul class="driver-popover-list driver-popover-list--plain">
+    ${items.map(i => `<li>${esc(i)}</li>`).join('')}
+  </ul>`;
+}
+
+// Item de sidebar (label + valor) com popover opcional. `popover` já vem
+// pronto (via popoverHtml) ou null/undefined pra um item sem explicação.
+function statItemHtml(label, value, popover) {
+  const hasPopover = !!popover;
+  return `<div class="driver-highlight-item${hasPopover ? ' driver-has-popover' : ''}"${hasPopover ? ' tabindex="0"' : ''}>
+    <span class="driver-highlight-label">${esc(label)}</span>
+    <span class="driver-highlight-value">${esc(String(value))}</span>
+    ${popover || ''}
+  </div>`;
 }
 
 function cssVar(name) {
@@ -277,22 +375,19 @@ function computeTitleGroups(rows) {
 // RENDER — HERO
 // ---------------------------------------------
 function renderHero() {
-  const anos = etapas.map(r => parseInt(r['Ano'], 10)).filter(n => !isNaN(n));
-  const minAno = anos.length ? Math.min(...anos) : '-';
-  const maxAno = anos.length ? Math.max(...anos) : '-';
   const periodEl = document.getElementById('driverPeriod');
-  if (periodEl) periodEl.textContent = `${minAno} – ${maxAno}`;
+  if (periodEl) periodEl.textContent = `${t.hero.since} ${careerStartYear !== null ? careerStartYear : '-'}`;
 
   const medalsEl = document.getElementById('driverMedals');
   if (!medalsEl) return;
   const medals = [];
-  if (statsBar.titulos > 0) medals.push(medalHtml('🏆', statsBar.titulos, t.hero.titlesLabel));
-  if (statsBar.construtores > 0) medals.push(medalHtml('👥', statsBar.construtores, t.hero.constructorsLabel));
+  if (statsBar.titulos > 0) medals.push(medalHtml('🏆', statsBar.titulos, t.hero.titlesLabel, 'titles-driver'));
+  if (statsBar.construtores > 0) medals.push(medalHtml('👥', statsBar.construtores, t.hero.constructorsLabel, 'titles-constructor'));
   medalsEl.innerHTML = medals.join('');
 }
 
-function medalHtml(icon, count, label) {
-  return `<div class="driver-medal">
+function medalHtml(icon, count, label, statType) {
+  return `<div class="driver-medal" data-stat="${statType}" role="button" tabindex="0">
     <span class="driver-medal-icon">${icon}</span>
     <span class="driver-medal-count">×${count}</span>
     <span class="driver-medal-label">${esc(label)}</span>
@@ -302,8 +397,35 @@ function medalHtml(icon, count, label) {
 // ---------------------------------------------
 // RENDER — STATS BAR
 // ---------------------------------------------
+const counterTimers = new WeakMap();
+
+function animateCounterEl(el, target, duration) {
+  if (!el) return;
+  duration = duration || 800;
+  const existing = counterTimers.get(el);
+  if (existing) cancelAnimationFrame(existing);
+
+  const start = parseInt(el.textContent, 10) || 0;
+  if (start === target) { el.textContent = String(target); return; }
+  const startTime = performance.now();
+
+  function tick(now) {
+    const progress = Math.min((now - startTime) / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3); // ease-out
+    const value = Math.round(start + (target - start) * eased);
+    el.textContent = String(value);
+    if (progress < 1) {
+      counterTimers.set(el, requestAnimationFrame(tick));
+    } else {
+      el.textContent = String(target);
+      counterTimers.delete(el);
+    }
+  }
+  counterTimers.set(el, requestAnimationFrame(tick));
+}
+
 function renderStatsBar() {
-  const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+  const set = (id, val) => animateCounterEl(document.getElementById(id), val);
   set('statRaces', statsBar.corridas);
   set('statPodiums', statsBar.podios);
   set('statWins', statsBar.vitorias);
@@ -318,13 +440,26 @@ function renderStatsBar() {
 // RENDER — SIDEBAR
 // ---------------------------------------------
 function renderSidebarAdvanced() {
-  const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
-  set('taxaPodios', advancedStats.taxaPodios);
-  set('taxaVitorias', advancedStats.taxaVitorias);
-  set('taxaTop10', advancedStats.taxaTop10);
-  set('etapasPorPodio', advancedStats.etapasPorPodio);
-  set('etapasPorVitoria', advancedStats.etapasPorVitoria);
-  set('taxaAbandono', advancedStats.taxaAbandono);
+  const container = document.getElementById('advancedStatsContainer');
+  if (!container || !advancedStats) return;
+  const a = advancedStats;
+
+  const items = [
+    statItemHtml(t.sidebar.podiumRate, a.taxaPodios,
+      popoverHtml(t.sidebar.podiumRate, popoverTextListHtml([`${a.podios} ${pl(a.podios, t.tabs.raceSingular, t.tabs.racePlural)} ${t.popover.of} ${a.corridas}`]))),
+    statItemHtml(t.sidebar.winRate, a.taxaVitorias,
+      popoverHtml(t.sidebar.winRate, popoverTextListHtml([`${a.vitorias} ${pl(a.vitorias, t.tabs.raceSingular, t.tabs.racePlural)} ${t.popover.of} ${a.corridas}`]))),
+    statItemHtml(t.sidebar.top10Rate, a.taxaTop10,
+      popoverHtml(t.sidebar.top10Rate, popoverTextListHtml([`Top 10 ${t.popover.of} ${a.corridas}: ${a.top10}`]))),
+    statItemHtml(t.sidebar.racesPerPodium, a.etapasPorPodio,
+      popoverHtml(t.sidebar.racesPerPodium, popoverTextListHtml([`${a.corridas} ${pl(a.corridas, t.tabs.raceSingular, t.tabs.racePlural)} ${t.popover.of} ${a.podios}`]))),
+    statItemHtml(t.sidebar.racesPerWin, a.etapasPorVitoria,
+      popoverHtml(t.sidebar.racesPerWin, popoverTextListHtml([`${a.corridas} ${pl(a.corridas, t.tabs.raceSingular, t.tabs.racePlural)} ${t.popover.of} ${a.vitorias}`]))),
+    statItemHtml(t.sidebar.dnfRate, a.taxaAbandono,
+      popoverHtml(t.sidebar.dnfRate, popoverTextListHtml([`DNF: ${a.abandonos} ${t.popover.of} ${a.corridas}`])))
+  ];
+
+  container.innerHTML = items.join('');
 }
 
 function renderRecordes() {
@@ -336,20 +471,109 @@ function renderRecordes() {
   }
   const items = [];
   if (recordes.melhorResultado !== null && recordes.melhorResultado !== undefined) {
-    items.push([t.sidebar.bestResult, 'P' + recordes.melhorResultado]);
+    const pop = recordes.melhorResultadoRace
+      ? popoverHtml(t.popover.firstAchieved, popoverRaceListHtml([recordes.melhorResultadoRace]))
+      : null;
+    items.push(statItemHtml(t.sidebar.bestResult, 'P' + recordes.melhorResultado, pop));
   }
-  if (recordes.maxPodiosConsecutivos > 0) items.push([t.sidebar.podiumStreak, recordes.maxPodiosConsecutivos]);
-  if (recordes.maxVitoriasConsecutivas > 0) items.push([t.sidebar.winStreak, recordes.maxVitoriasConsecutivas]);
-  if (recordes.circuitosComVitoria > 0) items.push([t.sidebar.circuitsWon, recordes.circuitosComVitoria]);
-  if (recordes.ligasComTitulo > 0) items.push([t.sidebar.leaguesWithTitle, recordes.ligasComTitulo]);
+  if (recordes.maxPodiosConsecutivos > 0) {
+    items.push(statItemHtml(t.sidebar.podiumStreak, recordes.maxPodiosConsecutivos,
+      popoverHtml(t.popover.streakRaces, popoverRaceListHtml(recordes.podiumStreakRaces))));
+  }
+  if (recordes.maxVitoriasConsecutivas > 0) {
+    items.push(statItemHtml(t.sidebar.winStreak, recordes.maxVitoriasConsecutivas,
+      popoverHtml(t.popover.streakRaces, popoverRaceListHtml(recordes.winStreakRaces))));
+  }
+  if (recordes.circuitosComVitoria > 0) {
+    items.push(statItemHtml(t.sidebar.circuitsWon, recordes.circuitosComVitoria,
+      popoverHtml(t.sidebar.circuitsWon, popoverTextListHtml(recordes.circuitosComVitoriaList))));
+  }
+  if (recordes.ligasComTitulo > 0) {
+    items.push(statItemHtml(t.sidebar.leaguesWithTitle, recordes.ligasComTitulo,
+      popoverHtml(t.sidebar.leaguesWithTitle, popoverTextListHtml(recordes.ligasComTituloList))));
+  }
 
-  container.innerHTML = items.length
-    ? items.map(([label, val]) => `
-        <div class="driver-highlight-item">
-          <span class="driver-highlight-label">${esc(label)}</span>
-          <span class="driver-highlight-value">${esc(String(val))}</span>
-        </div>`).join('')
-    : `<p class="driver-loading-text">${esc(t.sidebar.noHighlights)}</p>`;
+  container.innerHTML = items.length ? items.join('') : `<p class="driver-loading-text">${esc(t.sidebar.noHighlights)}</p>`;
+}
+
+function renderTeamStart() {
+  const container = document.getElementById('teamStartContainer');
+  if (!container) return;
+
+  const items = [];
+  byEquipe.forEach(g => {
+    items.push(statItemHtml(g.equipe, `${g.rows.length} ${pl(g.rows.length, t.tabs.raceSingular, t.tabs.racePlural)}`));
+  });
+  if (startStats) {
+    items.push(statItemHtml(t.sidebar.avgStart, 'P' + startStats.avgStart));
+    items.push(statItemHtml(t.sidebar.avgGain, startStats.avgGain));
+    const bestStartPop = startStats.melhorLargadaRace
+      ? popoverHtml(t.popover.firstAchieved, popoverRaceListHtml([startStats.melhorLargadaRace]))
+      : null;
+    items.push(statItemHtml(t.sidebar.bestStart, 'P' + startStats.melhorLargada, bestStartPop));
+
+    if (startStats.maiorGanho !== null && startStats.maiorGanhoRace) {
+      const gainPop = popoverHtml(t.popover.firstAchieved, popoverRaceListHtml([startStats.maiorGanhoRace]));
+      items.push(statItemHtml(t.sidebar.biggestGain, '+' + startStats.maiorGanho, gainPop));
+    }
+  }
+
+  container.innerHTML = items.length ? items.join('') : `<p class="driver-loading-text">${esc(t.sidebar.noHighlights)}</p>`;
+}
+
+function renderSimulador() {
+  const container = document.getElementById('simuladorContainer');
+  if (!container) return;
+
+  const items = bySimulador.map(g => {
+    const s = g.stats;
+    const pop = popoverHtml(g.simulador, popoverTextListHtml([
+      `${t.statsBar.podiums}: ${s.podios}`,
+      `${t.statsBar.wins}: ${s.vitorias}`,
+      `${t.statsBar.poles}: ${s.poles}`,
+      `${t.statsBar.fastlaps}: ${s.fastLaps}`,
+      `${t.statsBar.hattricks}: ${s.hatTricks}`
+    ]));
+    return statItemHtml(g.simulador, `${g.rows.length} ${pl(g.rows.length, t.tabs.raceSingular, t.tabs.racePlural)}`, pop);
+  });
+
+  container.innerHTML = items.length ? items.join('') : `<p class="driver-loading-text">${esc(t.sidebar.noHighlights)}</p>`;
+}
+
+// ---------------------------------------------
+// FILTRO GLOBAL (Ano / Liga / Simulador)
+// ---------------------------------------------
+function fillFilterSelect(id, values, current, allLabel) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.innerHTML = [`<option value="">${esc(allLabel)}</option>`]
+    .concat(values.map(v => `<option value="${esc(v)}"${v === current ? ' selected' : ''}>${esc(v)}</option>`))
+    .join('');
+}
+
+function renderFilterBar() {
+  fillFilterSelect('filterAno', allAnos, filters.ano, t.filter.all);
+  fillFilterSelect('filterLiga', allLigas, filters.liga, t.filter.allFem);
+  fillFilterSelect('filterSimulador', allSimuladores, filters.simulador, t.filter.all);
+
+  const clearBtn = document.getElementById('filterClearBtn');
+  if (clearBtn) clearBtn.hidden = !(filters.ano || filters.liga || filters.simulador);
+}
+
+const filterAnoEl = document.getElementById('filterAno');
+const filterLigaEl = document.getElementById('filterLiga');
+const filterSimuladorEl = document.getElementById('filterSimulador');
+const filterClearBtnEl = document.getElementById('filterClearBtn');
+
+if (filterAnoEl) filterAnoEl.addEventListener('change', () => { filters.ano = filterAnoEl.value; onFiltersChanged(); });
+if (filterLigaEl) filterLigaEl.addEventListener('change', () => { filters.liga = filterLigaEl.value; onFiltersChanged(); });
+if (filterSimuladorEl) filterSimuladorEl.addEventListener('change', () => { filters.simulador = filterSimuladorEl.value; onFiltersChanged(); });
+if (filterClearBtnEl) {
+  filterClearBtnEl.addEventListener('click', () => {
+    filters = { ano: '', liga: '', simulador: '' };
+    renderFilterBar();
+    onFiltersChanged();
+  });
 }
 
 // ---------------------------------------------
@@ -392,6 +616,46 @@ function renderChart() {
       }
     }
   });
+}
+
+// ---------------------------------------------
+// RENDER — TIMELINE VISUAL
+// ---------------------------------------------
+function renderTimeline() {
+  const container = document.getElementById('driverTimeline');
+  if (!container) return;
+  if (!milestones.length) {
+    container.innerHTML = `<p class="driver-loading-text">${esc(t.tabs.noData)}</p>`;
+    return;
+  }
+
+  const times = milestones
+    .map(m => DriverData.parseDatePtBR(m.race['Data']))
+    .filter(Boolean)
+    .map(d => d.getTime());
+  const minTime = Math.min(...times);
+  const maxTime = Math.max(...times);
+  const span = maxTime - minTime || 1;
+
+  const markersHtml = milestones.map((m, i) => {
+    const idx = etapas.indexOf(m.race);
+    const date = DriverData.parseDatePtBR(m.race['Data']);
+    const pct = date ? ((date.getTime() - minTime) / span) * 100 : 0;
+    const side = i % 2 === 0 ? 'above' : 'below';
+    const key = MILESTONE_KEY_MAP[m.label];
+    const label = key ? t.milestones[key] : m.label;
+    return `
+      <div class="driver-timeline-marker ${side}" style="left:${pct.toFixed(2)}%" data-row-idx="${idx}" tabindex="0">
+        <span class="driver-timeline-dot">${m.icon}</span>
+        <div class="driver-timeline-card">
+          <div class="driver-timeline-label">${esc(label)}</div>
+          <div class="driver-timeline-track-name">${esc(m.race['Pista'])}</div>
+          <div class="driver-timeline-date">${esc(m.race['Data'])}</div>
+        </div>
+      </div>`;
+  }).join('');
+
+  container.innerHTML = `<div class="driver-timeline-track">${markersHtml}</div>`;
 }
 
 // ---------------------------------------------
@@ -519,7 +783,7 @@ function renderCircuitosTab() {
     <div class="driver-top3-card">
       <div class="driver-top3-label">${esc(cat.label)}</div>
       <ul class="driver-top3-list">
-        ${cat.circuitos.map((c, i) => `<li>${medalIcon(i)} ${esc(c)}</li>`).join('')}
+        ${cat.circuitos.map((c, i) => `<li>${medalIcon(i)} ${esc(c.pista)} <span class="driver-top3-value">${esc(String(c.valor))}</span></li>`).join('')}
       </ul>
     </div>`).join('');
 
@@ -588,7 +852,7 @@ function statModalItemHtml(row, idx) {
 
 function openStatModal(statType) {
   currentStatType = statType;
-  const sorted = DriverData.sortByDateAsc(DriverData.filterByStatType(etapas, statType));
+  const sorted = DriverData.sortByDateAsc(DriverData.filterByStatType(getFilteredEtapas(), statType));
   if (statModalSortDesc) sorted.reverse();
   currentModalRaces = sorted;
   renderStatModal();
@@ -640,13 +904,23 @@ function titleGroupItemHtml(g) {
     </div>`;
 }
 
-function openTitlesModal() {
-  const groups = computeTitleGroups(etapas);
+function openTitlesModal(filterType) {
+  let groups = computeTitleGroups(getFilteredEtapas());
+  let icon = '🏆';
+  let title = t.modal.titlesModalTitle;
+  if (filterType === 'titles-driver') {
+    groups = groups.filter(g => g.piloto);
+    title = t.hero.titlesLabel;
+  } else if (filterType === 'titles-constructor') {
+    groups = groups.filter(g => g.construtores);
+    icon = '👥';
+    title = t.hero.constructorsLabel;
+  }
   const html = `
     <div class="driver-modal-overlay" id="statModalOverlay">
       <div class="driver-modal">
         <button class="driver-modal-close" type="button" aria-label="${esc(t.modal.close)}">✕</button>
-        <h2 class="driver-modal-title">🏆 ${esc(t.modal.titlesModalTitle)} (${groups.length})</h2>
+        <h2 class="driver-modal-title">${icon} ${esc(title)} (${groups.length})</h2>
         <div class="driver-modal-list">
           ${groups.length ? groups.map(titleGroupItemHtml).join('') : `<p class="driver-loading-text">${esc(t.tabs.noData)}</p>`}
         </div>
@@ -666,11 +940,44 @@ function closeStatModal() {
 // ---------------------------------------------
 // MODAL — RACE DETAIL
 // ---------------------------------------------
-function raceFieldHtml(label, value) {
-  return `<div>
-    <div class="driver-race-field-label">${esc(label)}</div>
-    <div class="driver-race-field-value">${esc(value === undefined || value === null || value === '' ? '-' : value)}</div>
-  </div>`;
+function raceResultHtml(row) {
+  const startNum = parseInt(row['Inicio'], 10);
+  const hasStart = !isNaN(startNum);
+  const finishPos = DriverData.formatPosition(row);
+  const finishNum = parseInt(String(row['Final'] || '').trim(), 10);
+  const hasFinish = !isNaN(finishNum);
+
+  let arrowClass = 'neutral';
+  let deltaHtml = '';
+  if (hasStart && hasFinish) {
+    const delta = startNum - finishNum;
+    arrowClass = delta > 0 ? 'gained' : (delta < 0 ? 'lost' : 'neutral');
+    if (delta !== 0) {
+      deltaHtml = `<span class="driver-race-result-delta">${delta > 0 ? '+' : ''}${delta}</span>`;
+    }
+  } else if (!hasFinish) {
+    arrowClass = 'lost';
+  }
+
+  const finishClass = posClassFor(row);
+
+  return `
+    <div class="driver-race-result">
+      <div class="driver-race-result-pos">
+        <span class="driver-race-result-label">${esc(t.modal.start)}</span>
+        <span class="driver-race-result-value">${hasStart ? 'P' + startNum : '-'}</span>
+      </div>
+      <div class="driver-race-result-arrow ${arrowClass}">
+        <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 12h13M13 6l6 6-6 6"/>
+        </svg>
+        ${deltaHtml}
+      </div>
+      <div class="driver-race-result-pos ${finishClass}">
+        <span class="driver-race-result-label">${esc(t.modal.finish)}</span>
+        <span class="driver-race-result-value">${esc(finishPos || '-')}</span>
+      </div>
+    </div>`;
 }
 
 function buildVideoHtml(link) {
@@ -688,29 +995,17 @@ function buildVideoHtml(link) {
 
 function openRaceModal(row) {
   if (!row) return;
-  const pos = DriverData.formatPosition(row);
   const badges = DriverData.badgesForRace(row);
   const categoria = row['Categoria'] ? ` • ${esc(row['Categoria'])}` : '';
-
-  const fields = [
-    raceFieldHtml(t.modal.track, row['Pista']),
-    raceFieldHtml(t.modal.league, row['Liga']),
-    row['Categoria'] ? raceFieldHtml(t.modal.category, row['Categoria']) : '',
-    raceFieldHtml(t.modal.season, row['Temporada']),
-    raceFieldHtml(t.modal.year, row['Ano']),
-    raceFieldHtml(t.modal.date, row['Data']),
-    row['Hora'] ? raceFieldHtml(t.modal.time, row['Hora']) : '',
-    raceFieldHtml(t.modal.start, row['Inicio'] ? 'P' + row['Inicio'] : '-'),
-    raceFieldHtml(t.modal.finish, pos)
-  ].join('');
+  const dataHora = [row['Data'], row['Hora']].filter(Boolean).map(esc).join(' às ');
 
   const html = `
     <div class="driver-modal-overlay" id="raceModalOverlay">
       <div class="driver-modal driver-race-modal">
         <button class="driver-modal-close" type="button" aria-label="${esc(t.modal.close)}">✕</button>
         <h2 class="driver-modal-title">${esc(row['Pista'])}</h2>
-        <div class="driver-modal-subtitle">${esc(row['Liga'])}${categoria} • ${esc(row['Temporada'])} • ${esc(row['Ano'])}</div>
-        <div class="driver-race-modal-fields">${fields}</div>
+        <div class="driver-modal-subtitle">${esc(row['Liga'])}${categoria} • ${esc(row['Temporada'])} • ${esc(row['Ano'])}${dataHora ? ' • ' + dataHora : ''}</div>
+        ${raceResultHtml(row)}
         ${badges ? `<div class="driver-race-modal-badges">${badges}</div>` : ''}
         ${buildVideoHtml(row['Transmissão'])}
       </div>
@@ -730,32 +1025,54 @@ function closeRaceModal() {
 // RENDER ALL / COMPUTE ALL
 // ---------------------------------------------
 function computeAll() {
-  statsBar = DriverData.computeStatsBar(etapas);
-  advancedStats = DriverData.computeAdvancedStats(etapas);
-  recordes = DriverData.computeRecordes(etapas);
-  byAno = DriverData.computeByAno(etapas);
-  byLiga = DriverData.computeByLiga(etapas);
-  byCircuito = DriverData.computeByCircuito(etapas);
-  milestones = DriverData.computeMilestones(etapas);
+  const filtered = getFilteredEtapas();
+  statsBar = DriverData.computeStatsBar(filtered);
+  advancedStats = DriverData.computeAdvancedStats(filtered);
+  recordes = DriverData.computeRecordes(filtered);
+  byAno = DriverData.computeByAno(filtered);
+  byLiga = DriverData.computeByLiga(filtered);
+  byCircuito = DriverData.computeByCircuito(filtered);
+  top3Circuitos = DriverData.computeTop3Circuitos(byCircuito);
+  byEquipe = DriverData.computeByEquipe(filtered);
+  bySimulador = DriverData.computeBySimulador(filtered);
+  startStats = DriverData.computeStartStats(filtered);
+  milestones = DriverData.computeMilestones(filtered);
 }
 
 function renderAll() {
   renderHero();
   renderStatsBar();
   renderChart();
+  renderTimeline();
   renderAnosTab();
   renderLigasTab();
   renderCircuitosTab();
   renderMarcosTab();
   renderSidebarAdvanced();
   renderRecordes();
+  renderTeamStart();
+  renderSimulador();
+}
+
+function onFiltersChanged() {
+  computeAll();
+  renderAll();
+  const clearBtn = document.getElementById('filterClearBtn');
+  if (clearBtn) clearBtn.hidden = !(filters.ano || filters.liga || filters.simulador);
 }
 
 async function init() {
   try {
     const data = await DriverData.loadDriverData();
     etapas = data.etapas;
-    top3Circuitos = data.top3Circuitos;
+
+    const anos = etapas.map(r => parseInt(r['Ano'], 10)).filter(n => !isNaN(n));
+    careerStartYear = anos.length ? Math.min(...anos) : null;
+    allAnos = [...new Set(etapas.map(r => r['Ano']))].sort();
+    allLigas = [...new Set(etapas.map(r => r['Liga']))].sort((a, b) => a.localeCompare(b));
+    allSimuladores = [...new Set(etapas.map(r => DriverData.normalizeSimulador(r['Simulador'])))].sort((a, b) => a.localeCompare(b));
+
+    renderFilterBar();
     computeAll();
     dataLoaded = true;
     renderAll();
@@ -776,7 +1093,7 @@ function applyTranslations() {
   document.documentElement.lang = currentLang === 'pt' ? 'pt-BR' : 'en';
   const flagEl = document.getElementById('lang-flag');
   if (flagEl) flagEl.innerHTML = currentLang === 'pt' ? '🇧🇷 <small>PT</small>' : '🇺🇸 <small>EN</small>';
-  if (dataLoaded) renderAll();
+  if (dataLoaded) { renderFilterBar(); renderAll(); }
 }
 
 const langToggleBtn = document.getElementById('lang-toggle');
@@ -854,16 +1171,28 @@ document.querySelectorAll('.driver-tab-btn').forEach(btn => {
 // EVENT DELEGATION — stat cards, accordions, race items, modais
 // ---------------------------------------------
 document.addEventListener('click', (e) => {
+  // Popovers: clique/toque alterna (hover já funciona sozinho via CSS em telas com mouse).
+  const popoverTrigger = e.target.closest('.driver-has-popover');
+  if (popoverTrigger) {
+    const wasOpen = popoverTrigger.classList.contains('open');
+    document.querySelectorAll('.driver-has-popover.open').forEach(el => el.classList.remove('open'));
+    if (!wasOpen) popoverTrigger.classList.add('open');
+    return;
+  }
+  document.querySelectorAll('.driver-has-popover.open').forEach(el => el.classList.remove('open'));
+
   const accHeader = e.target.closest('[data-acc-toggle]');
   if (accHeader) {
     accHeader.closest('.driver-acc-item').classList.toggle('open');
     return;
   }
 
-  const statCard = e.target.closest('.driver-stat-card[data-stat]');
+  const statCard = e.target.closest('.driver-stat-card[data-stat], .driver-medal[data-stat]');
   if (statCard) {
     const stat = statCard.dataset.stat;
-    if (stat === 'titles') openTitlesModal(); else openStatModal(stat);
+    if (stat === 'titles') openTitlesModal();
+    else if (stat === 'titles-driver' || stat === 'titles-constructor') openTitlesModal(stat);
+    else openStatModal(stat);
     return;
   }
 
@@ -879,7 +1208,7 @@ document.addEventListener('click', (e) => {
     return;
   }
 
-  const raceItem = e.target.closest('.driver-race-item[data-row-idx], .driver-marco-item[data-row-idx]');
+  const raceItem = e.target.closest('.driver-race-item[data-row-idx], .driver-marco-item[data-row-idx], .driver-timeline-marker[data-row-idx]');
   if (raceItem) {
     const idx = parseInt(raceItem.dataset.rowIdx, 10);
     openRaceModal(etapas[idx]);
@@ -897,6 +1226,12 @@ document.addEventListener('click', (e) => {
 
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') { closeStatModal(); closeRaceModal(); }
+  if (e.key === 'Enter' || e.key === ' ') {
+    const medal = e.target.closest('.driver-medal[data-stat]');
+    if (medal) { e.preventDefault(); openTitlesModal(medal.dataset.stat); return; }
+    const marker = e.target.closest('.driver-timeline-marker[data-row-idx]');
+    if (marker) { e.preventDefault(); openRaceModal(etapas[parseInt(marker.dataset.rowIdx, 10)]); }
+  }
 });
 
 // ---------------------------------------------

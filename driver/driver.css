@@ -35,10 +35,37 @@
   pointer-events: none;
 }
 
-.driver-hero-inner {
+.driver-hero-layout {
   position: relative;
   z-index: 3;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3rem;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.driver-hero-inner {
+  text-align: left;
+  flex: 1;
+  min-width: 280px;
+}
+
+.driver-hero-photo-wrap { flex-shrink: 0; }
+
+.driver-hero-photo {
+  display: block;
+  width: 220px;
+  height: 220px;
+  object-fit: cover;
+  object-position: top center;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  background:
+    linear-gradient(var(--dark), var(--dark)) padding-box,
+    linear-gradient(135deg, var(--cyan), var(--purple)) border-box;
+  box-shadow: var(--glow-c);
 }
 
 .driver-hero-tag {
@@ -80,7 +107,7 @@
 .driver-hero-medals {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 1rem;
 }
 
@@ -93,6 +120,14 @@
   border: 1px solid var(--border2);
   border-radius: 30px;
   box-shadow: var(--glow-p);
+  cursor: pointer;
+  transition: transform .15s, border-color .15s;
+}
+
+.driver-medal:hover, .driver-medal:focus-visible {
+  border-color: var(--cyan);
+  transform: translateY(-2px);
+  outline: none;
 }
 
 .driver-medal-icon { font-size: 1.3rem; }
@@ -110,6 +145,77 @@
   color: var(--text-dim);
   text-transform: uppercase;
   letter-spacing: 1px;
+}
+
+/* ------------------------------------------
+   FILTRO GLOBAL
+   ------------------------------------------ */
+.driver-filter-bar {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 1.2rem;
+  position: relative;
+  z-index: 2;
+}
+
+.driver-filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: .35rem;
+}
+
+.driver-filter-group label {
+  font-family: var(--font-mono);
+  font-size: .65rem;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.driver-filter-group select {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: var(--font-main);
+  font-size: .85rem;
+  padding: .55rem .9rem;
+  min-width: 160px;
+  cursor: pointer;
+  transition: border-color .2s, box-shadow .2s;
+}
+
+.driver-filter-group select:hover,
+.driver-filter-group select:focus {
+  border-color: var(--cyan);
+  box-shadow: var(--glow-c);
+  outline: none;
+}
+
+.driver-filter-clear {
+  background: transparent;
+  border: 1px solid var(--border2);
+  color: var(--purple);
+  font-family: var(--font-mono);
+  font-size: .72rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: .55rem 1rem;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all .2s;
+}
+
+.driver-filter-clear:hover { border-color: var(--purple); box-shadow: var(--glow-p); }
+
+@media (max-width: 768px) {
+  .driver-filter-bar { padding: 0 1.5rem 1.5rem; }
+  .driver-filter-group select { min-width: 0; flex: 1; }
+  .driver-filter-group { flex: 1 1 40%; }
 }
 
 /* ------------------------------------------
@@ -181,6 +287,110 @@
   padding: 1.8rem;
   height: 400px;
   position: relative;
+}
+
+/* ------------------------------------------
+   TIMELINE VISUAL
+   ------------------------------------------ */
+.driver-timeline {
+  padding: 3.5rem .5rem 3rem;
+}
+
+.driver-timeline-track {
+  position: relative;
+  height: 2px;
+  margin: 0 3.5rem;
+  background: linear-gradient(90deg, var(--cyan), var(--purple), var(--pink));
+  opacity: .5;
+}
+
+.driver-timeline-marker {
+  position: absolute;
+  top: 0;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+  outline: none;
+  z-index: 1;
+}
+
+.driver-timeline-marker:hover,
+.driver-timeline-marker:focus-visible {
+  z-index: 10;
+}
+
+.driver-timeline-dot {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--dark2);
+  border: 2px solid var(--cyan);
+  font-size: 1rem;
+  box-shadow: var(--glow-c);
+  transition: transform .2s, border-color .2s;
+}
+
+.driver-timeline-marker:hover .driver-timeline-dot,
+.driver-timeline-marker:focus-visible .driver-timeline-dot {
+  border-color: var(--purple);
+  box-shadow: var(--glow-p);
+  transform: scale(1.15);
+}
+
+.driver-timeline-card {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 132px;
+  text-align: center;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: .5rem .6rem;
+}
+
+.driver-timeline-marker.below::after,
+.driver-timeline-marker.above::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  width: 1px;
+  background: var(--border2);
+}
+
+.driver-timeline-marker.below::after { top: 100%; height: 10px; }
+.driver-timeline-marker.above::after { bottom: 100%; height: 10px; }
+.driver-timeline-marker.below .driver-timeline-card { top: calc(100% + 12px); }
+.driver-timeline-marker.above .driver-timeline-card { bottom: calc(100% + 12px); }
+
+.driver-timeline-label {
+  font-family: var(--font-head);
+  font-size: .68rem;
+  color: var(--text);
+  margin-bottom: .2rem;
+  line-height: 1.2;
+}
+
+.driver-timeline-track-name {
+  font-size: .68rem;
+  color: var(--text-dim);
+}
+
+.driver-timeline-date {
+  font-family: var(--font-mono);
+  font-size: .62rem;
+  color: var(--cyan);
+  margin-top: .15rem;
+}
+
+@media (max-width: 768px) {
+  .driver-timeline-track { margin: 0 2.2rem; }
+  .driver-timeline-card { width: 92px; font-size: .88em; }
+  .driver-timeline-dot { width: 28px; height: 28px; font-size: .85rem; }
 }
 
 /* ------------------------------------------
@@ -443,7 +653,15 @@
   font-size: .85rem;
   color: var(--text);
   display: flex;
+  align-items: center;
   gap: .4rem;
+}
+
+.driver-top3-value {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: .72rem;
+  color: var(--text-dim);
 }
 
 /* ------------------------------------------
@@ -518,31 +736,6 @@
   margin-bottom: 1.2rem;
 }
 
-.driver-sidebar-stats {
-  display: flex;
-  flex-direction: column;
-  gap: .8rem;
-}
-
-.driver-sidebar-stat-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-bottom: .8rem;
-  border-bottom: 1px solid var(--border);
-  font-size: .88rem;
-}
-
-.driver-sidebar-stat-item:last-child { border-bottom: none; padding-bottom: 0; }
-
-.driver-sidebar-stat-label { color: var(--text-dim); }
-
-.driver-sidebar-stat-value {
-  font-family: var(--font-mono);
-  color: var(--cyan);
-  font-weight: 700;
-}
-
 .driver-highlights-list {
   display: flex;
   flex-direction: column;
@@ -568,6 +761,117 @@
   color: var(--purple);
   font-weight: 700;
   text-align: right;
+}
+
+/* ------------------------------------------
+   POPOVERS — explicação ao passar o mouse / tocar
+   ------------------------------------------ */
+.driver-has-popover {
+  position: relative;
+  cursor: help;
+  outline: none;
+}
+
+.driver-has-popover .driver-highlight-label {
+  border-bottom: 1px dotted var(--text-dim);
+}
+
+.driver-popover {
+  display: none;
+  position: absolute;
+  z-index: 60;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 260px;
+  background: var(--dark2);
+  border: 1px solid var(--cyan);
+  border-radius: 8px;
+  padding: .7rem .8rem;
+  box-shadow: var(--glow-c), 0 10px 30px rgba(0, 0, 0, .5);
+  text-align: left;
+  white-space: normal;
+}
+
+.driver-popover::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: var(--cyan);
+}
+
+.driver-has-popover:hover .driver-popover,
+.driver-has-popover:focus-within .driver-popover,
+.driver-has-popover.open .driver-popover {
+  display: block;
+}
+
+.driver-popover-title {
+  font-family: var(--font-mono);
+  font-size: .65rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--cyan);
+  margin-bottom: .5rem;
+}
+
+.driver-popover-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: .4rem;
+}
+
+.driver-popover-list li {
+  display: flex;
+  align-items: baseline;
+  gap: .4rem;
+  font-size: .78rem;
+  color: var(--text);
+}
+
+.driver-popover-list--plain {
+  display: block;
+  column-width: 100px;
+  column-gap: 1rem;
+}
+.driver-popover-list--plain li {
+  display: block;
+  padding-bottom: .3rem;
+  margin-bottom: .3rem;
+  border-bottom: 1px solid var(--border);
+  break-inside: avoid;
+}
+.driver-popover-list--plain li:last-child { border-bottom: none; }
+
+.driver-popover-pos {
+  font-family: var(--font-head);
+  font-weight: 700;
+  font-size: .72rem;
+  color: var(--text-dim);
+  flex-shrink: 0;
+}
+
+.driver-popover-pos.p1 { color: #ffd700; }
+.driver-popover-pos.p2 { color: #cfd8e3; }
+.driver-popover-pos.p3 { color: #cd7f32; }
+.driver-popover-pos.dnf { color: #ff6b6b; }
+
+.driver-popover-item-main { flex: 1; }
+
+.driver-popover-item-sub {
+  font-family: var(--font-mono);
+  font-size: .68rem;
+  color: var(--text-dim);
+  flex-shrink: 0;
+}
+
+.driver-popover-empty {
+  font-size: .78rem;
+  color: var(--text-dim);
 }
 
 /* ------------------------------------------
@@ -684,28 +988,63 @@
 /* ------------------------------------------
    MODAL DE CORRIDA — detalhes + vídeo
    ------------------------------------------ */
-.driver-race-modal-fields {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: .9rem 1.4rem;
+.driver-race-result {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(1rem, 4vw, 2.5rem);
+  padding: 1.6rem 1rem;
   margin-bottom: 1.4rem;
-  padding-bottom: 1.4rem;
-  border-bottom: 1px solid var(--border);
+  background: rgba(255, 255, 255, .02);
+  border: 1px solid var(--border);
+  border-radius: 12px;
 }
 
-.driver-race-field-label {
+.driver-race-result-pos {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .35rem;
+  min-width: 84px;
+}
+
+.driver-race-result-label {
   font-family: var(--font-mono);
   font-size: .68rem;
   color: var(--text-dim);
   text-transform: uppercase;
-  letter-spacing: 1px;
-  margin-bottom: .2rem;
+  letter-spacing: 1.5px;
 }
 
-.driver-race-field-value {
-  font-size: .95rem;
+.driver-race-result-value {
+  font-family: var(--font-head);
+  font-size: 2.1rem;
+  font-weight: 900;
   color: var(--text);
-  font-weight: 600;
+  line-height: 1;
+}
+
+.driver-race-result-pos.p1 .driver-race-result-value { color: #ffd700; text-shadow: 0 0 18px rgba(255, 215, 0, .5); }
+.driver-race-result-pos.p2 .driver-race-result-value { color: #cfd8e3; text-shadow: 0 0 18px rgba(207, 216, 227, .4); }
+.driver-race-result-pos.p3 .driver-race-result-value { color: #cd7f32; text-shadow: 0 0 18px rgba(205, 127, 50, .45); }
+.driver-race-result-pos.dnf .driver-race-result-value { color: #ff6b6b; font-size: 1.3rem; }
+
+.driver-race-result-arrow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .3rem;
+  color: var(--text-dim);
+  flex-shrink: 0;
+}
+
+.driver-race-result-arrow.gained { color: var(--cyan); filter: drop-shadow(0 0 6px rgba(0, 245, 255, .5)); }
+.driver-race-result-arrow.lost { color: #ff6b6b; filter: drop-shadow(0 0 6px rgba(255, 107, 107, .4)); }
+
+.driver-race-result-delta {
+  font-family: var(--font-mono);
+  font-size: .78rem;
+  font-weight: 700;
 }
 
 .driver-race-modal-badges {
@@ -756,10 +1095,16 @@
 
 @media (max-width: 768px) {
   .driver-hero { padding: 6.5rem 1.5rem 2.5rem; }
+  .driver-hero-layout { flex-direction: column-reverse; gap: 1.5rem; }
+  .driver-hero-inner { text-align: center; }
+  .driver-hero-medals { justify-content: center; }
+  .driver-hero-photo { width: 150px; height: 150px; }
   .driver-stats-grid { grid-template-columns: repeat(2, 1fr); }
   .driver-tab-btn { min-width: 50%; font-size: .7rem; padding: .8rem .5rem; }
   .driver-tab-panels { padding: 1.1rem; }
-  .driver-race-modal-fields { grid-template-columns: repeat(2, 1fr); }
+  .driver-race-result { gap: 1rem; padding: 1.2rem .5rem; }
+  .driver-race-result-pos { min-width: 64px; }
+  .driver-race-result-value { font-size: 1.6rem; }
 }
 
 @media (max-width: 480px) {

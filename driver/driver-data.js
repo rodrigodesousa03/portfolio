@@ -100,31 +100,16 @@
 
   // ---- Loading ----
 
+  // NOTA: "Top 3 Por Circuito" já foi lido direto de estatisticas-circuitos.csv,
+  // mas o export gviz (usado por update-data.ps1) espalha/embaralha esse
+  // mini-painel de 4 linhas ao exportar CSV — não é um formato estável pra
+  // depender. Em vez disso, computamos o Top 3 por Circuito a partir do
+  // próprio agrupamento por Pista feito com base em Etapas.csv (computeByCircuito),
+  // que é sempre confiável. Ver computeTop3Circuitos() abaixo.
   async function loadDriverData() {
-    const [etapasTxt, circuitosTxt] = await Promise.all([
-      fetch('../data/estatisticas-etapas.csv').then(r => r.text()),
-      fetch('../data/estatisticas-circuitos.csv').then(r => r.text())
-    ]);
-
+    const etapasTxt = await fetch('../data/estatisticas-etapas.csv').then(r => r.text());
     const etapas = parseCSVSimple(etapasTxt).filter(isValidRow);
-    const top3Circuitos = parseTop3Circuitos(circuitosTxt);
-
-    return { etapas, top3Circuitos };
-  }
-
-  function parseTop3Circuitos(text) {
-    const lines = text.replace(/\r/g, '').trim().split('\n').slice(0, 4).map(splitCSVLine);
-    const labelRow = lines[1]; // "Corridas:,Interlagos,Pódios:,Interlagos,..."
-    const categories = [];
-    for (let col = 0; col < labelRow.length; col += 2) {
-      const label = (labelRow[col] || '').replace(/:$/, '').trim();
-      if (!label) continue;
-      const circuitos = [1, 2, 3]
-        .map(rowIdx => (lines[rowIdx] && lines[rowIdx][col + 1] || '').trim())
-        .filter(Boolean);
-      categories.push({ label, circuitos });
-    }
-    return categories;
+    return { etapas };
   }
 
   // ---- Aggregations (stats bar, gráfico, abas) ----
@@ -158,6 +143,7 @@
     const abandonos = etapas.filter(isAbandono).length;
     const pct = (n) => corridas > 0 ? ((n / corridas) * 100).toFixed(1) + '%' : '-';
     return {
+      corridas, podios, vitorias, top10, abandonos,
       taxaPodios: pct(podios),
       taxaVitorias: pct(vitorias),
       taxaTop10: pct(top10),
@@ -171,30 +157,58 @@
     if (!etapas.length) return null;
     const cronologico = sortByDateAsc(etapas);
 
+    // Melhor resultado: guarda a corrida da PRIMEIRA vez que esse resultado apareceu
     let melhorResultado = null;
+    let melhorResultadoRace = null;
     cronologico.forEach(r => {
       const n = finalNum(r);
-      if (n !== null && (melhorResultado === null || n < melhorResultado)) melhorResultado = n;
+      if (n !== null && (melhorResultado === null || n < melhorResultado)) {
+        melhorResultado = n;
+        melhorResultadoRace = r;
+      }
     });
 
-    let maxPodiosConsecutivos = 0, streak = 0;
-    cronologico.forEach(r => {
-      if (isPodium(r)) { streak++; maxPodiosConsecutivos = Math.max(maxPodiosConsecutivos, streak); }
-      else streak = 0;
+    // Sequências: guarda as corridas que compõem a MAIOR sequência encontrada
+    let maxPodiosConsecutivos = 0, streak = 0, streakStart = 0, podiumStreakRaces = [];
+    cronologico.forEach((r, i) => {
+      if (isPodium(r)) {
+        if (streak === 0) streakStart = i;
+        streak++;
+        if (streak > maxPodiosConsecutivos) {
+          maxPodiosConsecutivos = streak;
+          podiumStreakRaces = cronologico.slice(streakStart, i + 1);
+        }
+      } else {
+        streak = 0;
+      }
     });
 
-    let maxVitoriasConsecutivas = 0, winStreak = 0;
-    cronologico.forEach(r => {
-      if (isWin(r)) { winStreak++; maxVitoriasConsecutivas = Math.max(maxVitoriasConsecutivas, winStreak); }
-      else winStreak = 0;
+    let maxVitoriasConsecutivas = 0, winStreak = 0, winStreakStart = 0, winStreakRaces = [];
+    cronologico.forEach((r, i) => {
+      if (isWin(r)) {
+        if (winStreak === 0) winStreakStart = i;
+        winStreak++;
+        if (winStreak > maxVitoriasConsecutivas) {
+          maxVitoriasConsecutivas = winStreak;
+          winStreakRaces = cronologico.slice(winStreakStart, i + 1);
+        }
+      } else {
+        winStreak = 0;
+      }
     });
 
-    const circuitosComVitoria = new Set(etapas.filter(isWin).map(r => r['Pista'])).size;
-    const ligasComTitulo = new Set(
+    const circuitosComVitoriaList = [...new Set(etapas.filter(isWin).map(r => r['Pista']))];
+    const ligasComTituloList = [...new Set(
       etapas.filter(r => isSim(r['Campeão']) || isSim(r['Construtores'])).map(r => r['Liga'])
-    ).size;
+    )];
 
-    return { melhorResultado, maxPodiosConsecutivos, maxVitoriasConsecutivas, circuitosComVitoria, ligasComTitulo };
+    return {
+      melhorResultado, melhorResultadoRace,
+      maxPodiosConsecutivos, podiumStreakRaces,
+      maxVitoriasConsecutivas, winStreakRaces,
+      circuitosComVitoria: circuitosComVitoriaList.length, circuitosComVitoriaList,
+      ligasComTitulo: ligasComTituloList.length, ligasComTituloList
+    };
   }
 
   function computeByAno(etapas) {
@@ -235,6 +249,8 @@
       vitorias: rows.filter(isWin).length,
       poles: rows.filter(r => isSim(r['Pole'])).length,
       fastLaps: rows.filter(r => isSim(r['Best Lap'])).length,
+      hatTricks: rows.filter(r => isSim(r['Hat-Trick'])).length,
+      abandonos: rows.filter(isAbandono).length,
       titulos: titulosSet.size,
       construtores: construtoresSet.size
     };
@@ -274,6 +290,93 @@
     return [...map.entries()]
       .map(([pista, rows]) => ({ pista, rows: sortByDateAsc(rows), stats: summarize(rows) }))
       .sort((a, b) => b.rows.length - a.rows.length);
+  }
+
+  // O CSV tem "iRacing" e "IRacing" como grafias distintas do mesmo simulador —
+  // normaliza para não duplicar a entrada no agrupamento.
+  function normalizeSimulador(nome) {
+    const n = String(nome || '').trim();
+    if (n.toLowerCase() === 'iracing') return 'iRacing';
+    return n;
+  }
+
+  function computeBySimulador(etapas) {
+    const map = new Map();
+    etapas.forEach(r => {
+      const simulador = normalizeSimulador(r['Simulador']);
+      if (!map.has(simulador)) map.set(simulador, []);
+      map.get(simulador).push(r);
+    });
+    return [...map.entries()]
+      .map(([simulador, rows]) => ({ simulador, rows, stats: summarize(rows) }))
+      .sort((a, b) => b.rows.length - a.rows.length);
+  }
+
+  function computeByEquipe(etapas) {
+    const map = new Map();
+    etapas.forEach(r => {
+      const equipe = r['Equipe'];
+      if (!map.has(equipe)) map.set(equipe, []);
+      map.get(equipe).push(r);
+    });
+    return [...map.entries()]
+      .map(([equipe, rows]) => ({ equipe, rows, stats: summarize(rows) }))
+      .sort((a, b) => b.rows.length - a.rows.length);
+  }
+
+  function inicioNum(r) {
+    const n = parseInt(String(r['Inicio'] || '').trim(), 10);
+    return isNaN(n) ? null : n;
+  }
+
+  function computeStartStats(etapas) {
+    const comLargada = etapas.filter(r => inicioNum(r) !== null);
+    if (!comLargada.length) return null;
+
+    const avgStart = comLargada.reduce((sum, r) => sum + inicioNum(r), 0) / comLargada.length;
+    const melhorLargada = Math.min(...comLargada.map(inicioNum));
+    const melhorLargadaRace = sortByDateAsc(comLargada).find(r => inicioNum(r) === melhorLargada);
+
+    const comGanho = comLargada.filter(r => finalNum(r) !== null);
+    const avgGainNum = comGanho.length
+      ? comGanho.reduce((sum, r) => sum + (inicioNum(r) - finalNum(r)), 0) / comGanho.length
+      : null;
+
+    let maiorGanho = null;
+    let maiorGanhoRace = null;
+    sortByDateAsc(comGanho).forEach(r => {
+      const delta = inicioNum(r) - finalNum(r);
+      if (maiorGanho === null || delta > maiorGanho) { maiorGanho = delta; maiorGanhoRace = r; }
+    });
+
+    return {
+      avgStart: avgStart.toFixed(1),
+      melhorLargada,
+      melhorLargadaRace,
+      avgGain: avgGainNum === null ? '-' : (avgGainNum >= 0 ? '+' : '') + avgGainNum.toFixed(1),
+      maiorGanho, maiorGanhoRace,
+      corridasGanhouPosicao: comGanho.filter(r => inicioNum(r) > finalNum(r)).length,
+      corridasPerdeuPosicao: comGanho.filter(r => inicioNum(r) < finalNum(r)).length
+    };
+  }
+
+  function computeTop3Circuitos(byCircuitoList) {
+    function top3(getter) {
+      return [...byCircuitoList]
+        .filter(c => getter(c.stats) > 0)
+        .sort((a, b) => getter(b.stats) - getter(a.stats))
+        .slice(0, 3)
+        .map(c => ({ pista: c.pista, valor: getter(c.stats) }));
+    }
+    return [
+      { label: 'Corridas', circuitos: top3(s => s.corridas) },
+      { label: 'Pódios', circuitos: top3(s => s.podios) },
+      { label: 'Vitórias', circuitos: top3(s => s.vitorias) },
+      { label: 'Poles', circuitos: top3(s => s.poles) },
+      { label: 'Fast Laps', circuitos: top3(s => s.fastLaps) },
+      { label: 'Hattricks', circuitos: top3(s => s.hatTricks) },
+      { label: 'Abandonos', circuitos: top3(s => s.abandonos) }
+    ].filter(cat => cat.circuitos.length > 0);
   }
 
   function computeMilestones(etapas) {
@@ -321,6 +424,11 @@
     computeByLiga,
     computeByTemporadaCategoria,
     computeByCircuito,
+    computeByEquipe,
+    computeBySimulador,
+    normalizeSimulador,
+    computeTop3Circuitos,
+    computeStartStats,
     computeMilestones,
     filterByStatType,
     badgesForRace,

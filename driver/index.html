@@ -18,15 +18,37 @@
 
   <!-- HERO -->
   <section class="driver-hero" id="hero">
-    <div class="driver-hero-inner">
-      <div class="driver-hero-tag">
-        <span class="blink-dot"></span>
-        <span data-i18n="hero.tag">PERFIL DO PILOTO</span>
+    <div class="driver-hero-layout">
+      <div class="driver-hero-inner">
+        <div class="driver-hero-tag">
+          <span class="blink-dot"></span>
+          <span data-i18n="hero.tag">PERFIL DO PILOTO</span>
+        </div>
+        <h1 class="driver-hero-name">Rodrigo de Sousa</h1>
+        <div class="driver-hero-period" id="driverPeriod">—</div>
+        <div class="driver-hero-medals" id="driverMedals"></div>
       </div>
-      <h1 class="driver-hero-name">Rodrigo de Sousa</h1>
-      <div class="driver-hero-period" id="driverPeriod">—</div>
-      <div class="driver-hero-medals" id="driverMedals"></div>
+      <div class="driver-hero-photo-wrap">
+        <img class="driver-hero-photo" src="../data/rodrigo-de-sousa.png" alt="Rodrigo de Sousa" />
+      </div>
     </div>
+  </section>
+
+  <!-- FILTRO -->
+  <section class="driver-filter-bar reveal">
+    <div class="driver-filter-group">
+      <label for="filterAno" data-i18n="filter.year">Ano</label>
+      <select id="filterAno"></select>
+    </div>
+    <div class="driver-filter-group">
+      <label for="filterLiga" data-i18n="filter.league">Liga</label>
+      <select id="filterLiga"></select>
+    </div>
+    <div class="driver-filter-group">
+      <label for="filterSimulador" data-i18n="filter.simulator">Simulador</label>
+      <select id="filterSimulador"></select>
+    </div>
+    <button type="button" id="filterClearBtn" class="driver-filter-clear" data-i18n="filter.clear" hidden>✕ Limpar filtros</button>
   </section>
 
   <!-- STATS BAR -->
@@ -105,11 +127,25 @@
     </div>
   </section>
 
+  <!-- TIMELINE -->
+  <section class="section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag" data-i18n="timeline.tag">// 02</span>
+        <h2 class="section-title" data-i18n="timeline.title">Linha do Tempo</h2>
+        <div class="section-line"></div>
+      </div>
+      <div id="driverTimeline" class="driver-timeline reveal">
+        <p class="driver-loading-text" data-i18n="tabs.loading">Carregando...</p>
+      </div>
+    </div>
+  </section>
+
   <!-- HISTÓRICO (TABS + SIDEBAR) -->
   <section class="section">
     <div class="container">
       <div class="section-header">
-        <span class="section-tag" data-i18n="tabs.tag">// 02</span>
+        <span class="section-tag" data-i18n="tabs.tag">// 03</span>
         <h2 class="section-title" data-i18n="tabs.sectionTitle">Histórico Completo</h2>
         <div class="section-line"></div>
       </div>
@@ -151,37 +187,28 @@
         <aside class="driver-sidebar">
           <div class="driver-sidebar-card reveal">
             <h3 class="driver-sidebar-title" data-i18n="sidebar.advancedTitle">Estatísticas Avançadas</h3>
-            <div class="driver-sidebar-stats">
-              <div class="driver-sidebar-stat-item">
-                <span class="driver-sidebar-stat-label" data-i18n="sidebar.podiumRate">Taxa de Pódios</span>
-                <span class="driver-sidebar-stat-value" id="taxaPodios">-</span>
-              </div>
-              <div class="driver-sidebar-stat-item">
-                <span class="driver-sidebar-stat-label" data-i18n="sidebar.winRate">Taxa de Vitórias</span>
-                <span class="driver-sidebar-stat-value" id="taxaVitorias">-</span>
-              </div>
-              <div class="driver-sidebar-stat-item">
-                <span class="driver-sidebar-stat-label" data-i18n="sidebar.top10Rate">Taxa de Top 10</span>
-                <span class="driver-sidebar-stat-value" id="taxaTop10">-</span>
-              </div>
-              <div class="driver-sidebar-stat-item">
-                <span class="driver-sidebar-stat-label" data-i18n="sidebar.racesPerPodium">Etapas / Pódio</span>
-                <span class="driver-sidebar-stat-value" id="etapasPorPodio">-</span>
-              </div>
-              <div class="driver-sidebar-stat-item">
-                <span class="driver-sidebar-stat-label" data-i18n="sidebar.racesPerWin">Etapas / Vitória</span>
-                <span class="driver-sidebar-stat-value" id="etapasPorVitoria">-</span>
-              </div>
-              <div class="driver-sidebar-stat-item">
-                <span class="driver-sidebar-stat-label" data-i18n="sidebar.dnfRate">Taxa de Abandono</span>
-                <span class="driver-sidebar-stat-value" id="taxaAbandono">-</span>
-              </div>
+            <div id="advancedStatsContainer" class="driver-highlights-list">
+              <p class="driver-loading-text" data-i18n="tabs.loading">Carregando...</p>
             </div>
           </div>
 
           <div class="driver-sidebar-card reveal">
             <h3 class="driver-sidebar-title" data-i18n="sidebar.highlightsTitle">Destaques</h3>
             <div id="recordesContainer" class="driver-highlights-list">
+              <p class="driver-loading-text" data-i18n="tabs.loading">Carregando...</p>
+            </div>
+          </div>
+
+          <div class="driver-sidebar-card reveal">
+            <h3 class="driver-sidebar-title" data-i18n="sidebar.teamStartTitle">Equipe &amp; Largada</h3>
+            <div id="teamStartContainer" class="driver-highlights-list">
+              <p class="driver-loading-text" data-i18n="tabs.loading">Carregando...</p>
+            </div>
+          </div>
+
+          <div class="driver-sidebar-card reveal">
+            <h3 class="driver-sidebar-title" data-i18n="sidebar.simuladorTitle">Por Simulador</h3>
+            <div id="simuladorContainer" class="driver-highlights-list">
               <p class="driver-loading-text" data-i18n="tabs.loading">Carregando...</p>
             </div>
           </div>
